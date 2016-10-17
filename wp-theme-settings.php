@@ -1,16 +1,16 @@
 <?php
 /**
- * Class WP_SettingsTheme - Settings and Management for Templates
+ * Class WP_ThemeSettings - Settings and Management for current Template
  *
  * Creates a page with the settings for the installed WordPress theme.
  * A very useful tool for developers who work with WordPress.
  *
- * @link    https://github.com/DevDiamondCom/WP_SettingsTheme
- * @version 0.0.0.1
+ * @link    https://github.com/DevDiamondCom/wp-theme-settings
+ * @version 0.0.0.2
  * @author  DevDiamond <me@devdiamond.com>
  * @license GPLv3 or later - http://www.gnu.org/licenses/gpl-3.0.html
  */
-class WP_SettingsTheme
+class WP_ThemeSettings
 {
 	/**
 	 * Constructor
