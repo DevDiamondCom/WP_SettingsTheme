@@ -1,2 +1,2 @@
-# WP_SettingsTheme
-WP Settings Theme
+# WP_ThemeSettings
+WP Theme Settings
