@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class WPTS_Admin_Menus
 {
+	const MAIN_MENU_SLUG = 'wpts';
+
 	/**
 	 * WPTS_Admin_Menus constructor.
 	 */
@@ -37,27 +39,92 @@ class WPTS_Admin_Menus
 			__('General Theme Settings', WPTS_PLUGIN_SLUG),
 			__('Theme Settings', WPTS_PLUGIN_SLUG),
 			'manage_options',
-			'wpts',
+			self::MAIN_MENU_SLUG,
 			null,
 			null,
 			'25.7'
 		);
 
-		// Sub menu
-		add_submenu_page(
-			'wpts',
-			__('General Theme Settings', WPTS_PLUGIN_SLUG),
-			__('General Settings', WPTS_PLUGIN_SLUG),
-			'manage_options',
-			'wpts',
-			array( $this, 'page_theme_settings' )
+		// Main sub menu
+		WPTS()->submenu[ self::MAIN_MENU_SLUG ] = array(
+			'page_title' => __('General Theme Settings', WPTS_PLUGIN_SLUG),
+			'menu_title' => __('General Settings', WPTS_PLUGIN_SLUG),
+			'capability' => 'manage_options',
 		);
+
+		// Add all sub menu
+		$this->sub_menu();
 	}
 
 	/**
-	 * Page Menu - General Theme Settings
+	 * Add Sub Menu list
 	 */
-	public function page_theme_settings()
+	private function sub_menu()
+	{
+		// Main sub menu
+		$main_sub_menu = WPTS()->submenu[ self::MAIN_MENU_SLUG ];
+		add_submenu_page(
+			self::MAIN_MENU_SLUG,
+			$main_sub_menu['page_title'],
+			$main_sub_menu['menu_title'],
+			$main_sub_menu['capability'],
+			self::MAIN_MENU_SLUG,
+			array( $this, 'sub_menu_page' )
+		);
+
+		// Other all sub menu
+		foreach ( WPTS()->submenu as $sKey => $sVal )
+		{
+			if ( ! preg_match('/[\w-]+/', $sKey ) || ! trim($sVal['page_title']) || $sKey === self::MAIN_MENU_SLUG )
+				continue;
+
+			if ( ! trim($sVal['capability']) )
+				WPTS()->submenu[ $sKey ]['capability'] = $sVal['capability'] = 'manage_options';
+			if ( ! current_user_can( $sVal['capability'] ) )
+				continue;
+
+			if ( ! trim($sVal['menu_title']) )
+				$sVal['menu_title'] = $sVal['page_title'];
+
+			add_submenu_page(
+				self::MAIN_MENU_SLUG,
+				$sVal['page_title'],
+				$sVal['menu_title'],
+				$sVal['capability'],
+				self::MAIN_MENU_SLUG.'-'.$sKey,
+				array( $this, 'sub_menu_page' )
+			);
+		}
+	}
+
+	/**
+	 * Sub Menu Page
+	 */
+	public function sub_menu_page()
+	{
+		if ( ! isset($_GET['page']) )
+			return;
+
+		if ( $_GET['page'] !== self::MAIN_MENU_SLUG )
+			$page_slug = str_replace(self::MAIN_MENU_SLUG.'-', '', $_GET['page']);
+		else
+			$page_slug = $_GET['page'];
+
+		if ( ! isset(WPTS()->submenu[ $page_slug ]) )
+			return;
+
+		if ( ! current_user_can( WPTS()->submenu[ $page_slug ]['capability'] ) )
+			return;
+
+		$this->menu_pages( $page_slug );
+	}
+
+	/**
+	 * Menu Pages
+	 *
+	 * @param string $page_slug  - Page slug
+	 */
+	private function menu_pages( $page_slug )
 	{
 		?>
 		<div class="wrap">
