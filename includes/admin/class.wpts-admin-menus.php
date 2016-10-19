@@ -11,7 +11,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Class WPTS_Admin_Menus - Create WP_ThemeSettings Menu
+ * Class WPTS_Admin_Menus - Create WP_ThemeSettings Menus
  */
 class WPTS_Admin_Menus
 {
@@ -23,7 +23,7 @@ class WPTS_Admin_Menus
 	public function __construct()
 	{
 		// Add menu
-		add_action( 'admin_menu', array( $this, 'admin_menu' ), 9 );
+		add_action('admin_menu', array( $this, 'admin_menu' ), 9);
 
 //		add_action( 'admin_head', array( $this, '' ) );
 //		add_action( 'admin_bar_menu', array( $this, '' ) );
@@ -69,7 +69,7 @@ class WPTS_Admin_Menus
 			$main_sub_menu['menu_title'],
 			$main_sub_menu['capability'],
 			self::MAIN_MENU_SLUG,
-			array( $this, 'sub_menu_page' )
+			array( 'WPTS_Admin_Menu_Pages', 'admin_menu_pages' )
 		);
 
 		// Other all sub menu
@@ -92,59 +92,9 @@ class WPTS_Admin_Menus
 				$sVal['menu_title'],
 				$sVal['capability'],
 				self::MAIN_MENU_SLUG.'-'.$sKey,
-				array( $this, 'sub_menu_page' )
+				array( 'WPTS_Admin_Menu_Pages', 'admin_menu_pages' )
 			);
 		}
-	}
-
-	/**
-	 * Sub Menu Page
-	 */
-	public function sub_menu_page()
-	{
-		if ( ! isset($_GET['page']) )
-			return;
-
-		if ( $_GET['page'] !== self::MAIN_MENU_SLUG )
-			$page_slug = str_replace(self::MAIN_MENU_SLUG.'-', '', $_GET['page']);
-		else
-			$page_slug = $_GET['page'];
-
-		if ( ! isset(WPTS()->submenu[ $page_slug ]) )
-			return;
-
-		if ( ! current_user_can( WPTS()->submenu[ $page_slug ]['capability'] ) )
-			return;
-
-		$this->menu_pages( $page_slug );
-	}
-
-	/**
-	 * Menu Pages
-	 *
-	 * @param string $page_slug  - Page slug
-	 */
-	private function menu_pages( $page_slug )
-	{
-		?>
-		<div class="wrap">
-			<h2><?php echo get_admin_page_title() ?></h2>
-
-			<?php
-			// settings_errors() не срабатывает автоматом на страницах отличных от опций
-			if( get_current_screen()->parent_base !== 'options-general' )
-				settings_errors('название_опции');
-			?>
-
-			<form action="options.php" method="POST">
-				<?php
-				settings_fields("opt_group");     // скрытые защитные поля
-				do_settings_sections("opt_page"); // секции с настройками (опциями).
-				submit_button();
-				?>
-			</form>
-		</div>
-		<?
 	}
 }
 

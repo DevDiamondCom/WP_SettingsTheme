@@ -54,6 +54,20 @@ if ( ! class_exists( 'WP_ThemeSettings' ) ) :
 final class WP_ThemeSettings
 {
 	/**
+	 * Tabs lists for the pages of WP_ThemeSettings menu
+	 *
+	 * @var array
+	 */
+	public $tabs = array();
+
+	/**
+	 * Sub menu list for WP_ThemeSettings
+	 *
+	 * @var array
+	 */
+	public $submenu = array();
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var WP_ThemeSettings
@@ -113,7 +127,7 @@ final class WP_ThemeSettings
 	/**
 	 * Include required core files used in admin and on the frontend.
 	 */
-	public function includes()
+	private function includes()
 	{
 		if ( $this->is_request('admin') )
 			require_once('includes/admin/class.wpts-admin.php');
@@ -156,17 +170,23 @@ final class WP_ThemeSettings
 	/**
 	 * Load Localisation files.
 	 */
-	public function load_plugin_textdomain()
+	private function load_plugin_textdomain()
 	{
 		if ( ! is_textdomain_loaded( WPTS_PLUGIN_SLUG ) )
 			load_plugin_textdomain( WPTS_PLUGIN_SLUG, false, basename( WPTS_PLUGIN_BASENAME ) . '/languages' );
 	}
 
+	/**
+	 * WP_ThemeSettings activation
+	 */
 	public function plugin_activation()
 	{
 		//
 	}
 
+	/**
+	 * WP_ThemeSettings deactivation
+	 */
 	public function plugin_deactivation()
 	{
 		//
