@@ -20,6 +20,17 @@
 	</IfModule>
 </FilesMatch>
 
+# WP_ThemeSettings CSS
+<FilesMatch "^(toggles\.min|main)\.js$">
+	<IfModule !mod_authz_core.c>
+		Allow from all
+	</IfModule>
+
+	<IfModule mod_authz_core.c>
+		Require all granted
+	</IfModule>
+</FilesMatch>
+
 # WP_ThemeSettings Font
 <FilesMatch "^fontawesome-webfont\.(woff|woff2|ttf)$">
 	<IfModule !mod_authz_core.c>

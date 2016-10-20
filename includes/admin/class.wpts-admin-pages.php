@@ -21,16 +21,26 @@ class WPTS_Admin_Menu_Pages
 	/**
 	 * Page data
 	 *
+	 * @static
 	 * @var array
 	 */
-	private static $page_data = array();
+	private static $page_data_group = array();
 
 	/**
 	 * Active Tab
 	 *
+	 * @static
 	 * @var string
 	 */
 	private static $active_tab;
+
+	/**
+	 * Is Form block
+	 *
+	 * @static
+	 * @var bool
+	 */
+	private static $is_form = false;
 
 	/**
 	 * WPTS_Admin_Menus constructor.
@@ -86,73 +96,50 @@ class WPTS_Admin_Menu_Pages
 	 * Menu Page
 	 *
 	 * @static
-	 * @param  string $tab_slug  - args tab slug
+	 * @param  string $tab_slug  - TAB slug
 	 */
 	private static function menu_page( $tab_slug )
 	{
-		// Add Script And Style
+		// Add Style and Script
 		self::add_styles();
+		self::add_scripts();
 
 		// echo get_admin_page_title()
 
-		?>
-		<div class="wrap">
+		echo '<div class="wrap">';
 
-			<?php self::echo_top_menu( $tab_slug ); ?>
+		self::echo_top_menu( $tab_slug );
 
-			<div class="wpts-settings-block">
-				<?php
-				// settings_errors() не срабатывает автоматом на страницах отличных от опций
-				if( get_current_screen()->parent_base !== 'options-general' )
-					settings_errors('название_опции');
-				?>
+		echo '<div class="wpts-settings-block"><br>';
 
-				<form action="options.php" method="POST">
-					<?php
-					settings_fields("opt_group");     // скрытые защитные поля
-					do_settings_sections("opt_page"); // секции с настройками (опциями).
-					submit_button();
-					?>
-				</form>
-			</div>
-		</div>
-		<?php
+		self::echo_body( $tab_slug );
+
+		// END From block
+		if ( self::$is_form )
+		{
+			echo '<div class="wpts-sb-btn">';
+			settings_fields("opt_group");
+			do_settings_sections("opt_page");
+			echo '<p><input type="submit" name="bt_save_settings" class="button button-primary" value="'.__('Save changes', WPTS_PLUGIN_SLUG).'">';
+			echo '&nbsp;&nbsp;<input type="submit" name="bt_reset_settings" class="button" value="'.__('Reset Settings', WPTS_PLUGIN_SLUG).'"></p>';
+			echo '</div></form>';
+		}
+
+		echo '</div></div>';
 	}
 
 	/**
 	 * Add Info page
+	 *
+	 * @static
 	 */
 	private static function info_page()
 	{
 		WPTS()->tabs[ WPTS_Admin_Menus::MAIN_MENU_SLUG ]['info'] = array(
-			'args' => array(
+			'title_args' => array(
 				'title'   => __("Info", WPTS_PLUGIN_SLUG),
 				'id'      => 'wpts-info',
 				'fa-icon' => 'fa-info-circle',
-			),
-			'groups' => array(
-				'set_1' => array(
-					'args' => array(
-						'title' => __("Website Title", WPTS_PLUGIN_SLUG),
-						'id'    => 'site-name',
-						'class' => '',
-						'desc'  => __("Enter your website title.", WPTS_PLUGIN_SLUG),
-					),
-					'fields' => array(
-						array(
-							'type'  => 'text', // switch,
-							'title' => __("Website Title", WPTS_PLUGIN_SLUG),
-							'name'  => 'blogname',
-							'id'    => 'blogname',
-							'class' => 'option-item bg-grey-input ',
-							'placeholder' => 'placeholder TEXT',
-							'default' => 100,
-							'min' => 0,
-							'max' => 200,
-							'data' => array(),
-						),
-					),
-				),
 			),
 		);
 	}
@@ -160,24 +147,88 @@ class WPTS_Admin_Menu_Pages
 	/**
 	 * Echo top menu
 	 *
-	 * @param string $tab_slug  - args tab slug
+	 * @static
+	 * @param string $tab_slug  - TAB slug
 	 */
 	private static function echo_top_menu( $tab_slug )
 	{
 		echo '<h2 class="nav-tab-wrapper wpts-top-menu">';
 		foreach ( WPTS()->tabs[ $tab_slug ] as $tKey => $tVal )
 		{
-			echo '<a href="?page='. $_GET['page'] .'&tab='. $tKey .'" id="'. (@$tVal['args']['id'] ?: '') .'" class="nav-tab ';
+			if ( ! isset($tVal['title_args']) )
+				continue;
+
+			echo '<a href="?page='. $_GET['page'] .'&tab='. $tKey .'" id="'. (@$tVal['title_args']['id'] ?: '') .'" class="nav-tab ';
 			if ( $tKey === self::$active_tab )
 			{
-				self::$page_data = $tVal['groups'];
+				self::$page_data_group = @$tVal['groups'] ?: array();
 				echo 'nav-tab-active ';
 			}
-			echo (@$tVal['args']['class'] ?: '') .'">';
-			echo (isset($tVal['args']['fa-icon']) ? '<i class="fa '. $tVal['args']['fa-icon'] .'"></i>' : '');
-			echo (@$tVal['args']['title'] ?: '') .'</a>';
+			echo (@$tVal['title_args']['class'] ?: '') .'">';
+			echo (isset($tVal['title_args']['fa-icon']) ? '<i class="fa '. $tVal['title_args']['fa-icon'] .'"></i>' : '');
+			echo (@$tVal['title_args']['title'] ?: '') .'</a>';
 		}
 		echo '</h2>';
+	}
+
+	/**
+	 * Echo body content
+	 *
+	 * @static
+	 * @param string $tab_slug  - TAB slug
+	 */
+	private static function echo_body( $tab_slug )
+	{
+		// GROUP (set) data
+		foreach ( self::$page_data_group as $gKey => $gVal )
+		{
+			if ( ! isset($gVal['group_args']) || ! isset($gVal['fields']) )
+				continue;
+
+			// BEGIN From block
+			if ( ! self::$is_form )
+			{
+				self::$is_form = true;
+				echo '<form action="" method="POST">';
+			}
+
+			?>
+			<div id="wpts_effects_box" class="wpts_eb_block">
+				<div class="wpts_eb_title">
+					<h3><i class="fa fa-plus-square"></i>Gallery Image Transition Effects</h3>
+				</div>
+				<div class="wpts_eb_body">
+					<div class="wpts_eb_desc"><?= (@$gVal['group_args']['desc'] ?: '') ?></div>
+					<div class="wpts_eb_table"><?php self::echo_fields( $gVal['fields'] ); ?></div>
+				</div>
+			</div>
+			<?
+		}
+	}
+
+	private static function echo_fields( $fields_data )
+	{
+		// BEGIN Table
+		echo '<table class="form-table"><tbody>';
+
+		$x1 = 0;
+		foreach ( $fields_data as $fVal )
+		{
+			$x1++;
+			echo '<tr valign="top">';
+			?>
+				<th class="">
+					<label for="">Auto Start</label>
+				</th>
+				<td class="">
+					<div class="toggle toggle-light">
+				</td>
+			<?
+			echo '</tr>';
+		}
+
+		// END Table
+		echo '</tbody></table>';
 	}
 
 	/**
@@ -185,7 +236,22 @@ class WPTS_Admin_Menu_Pages
 	 *
 	 * @static
 	 */
-	private static function add_scripts(){}
+	private static function add_scripts()
+	{
+		// Toggle JS
+		wp_enqueue_script(
+			'toggle-min',
+			WPTS_PLUGIN_URL . self::ASSETS_JS . 'toggles.min.js',
+			array('jquery')
+		);
+
+		// Main JS
+		wp_enqueue_script(
+			'wpts-main',
+			WPTS_PLUGIN_URL . self::ASSETS_JS . 'main.js',
+			array('jquery')
+		);
+	}
 
 	/**
 	 * Add Styles
