@@ -19,6 +19,20 @@ class WPTS_Admin_Menu_Pages
 	const ASSETS_JS  = 'assets/js/';
 
 	/**
+	 * Page data
+	 *
+	 * @var array
+	 */
+	private static $page_data = array();
+
+	/**
+	 * Active Tab
+	 *
+	 * @var string
+	 */
+	private static $active_tab;
+
+	/**
 	 * WPTS_Admin_Menus constructor.
 	 */
 	private function __construct(){}
@@ -44,41 +58,48 @@ class WPTS_Admin_Menu_Pages
 			return;
 
 		if ( $_GET['page'] !== WPTS_Admin_Menus::MAIN_MENU_SLUG )
-			$page_slug = str_replace(WPTS_Admin_Menus::MAIN_MENU_SLUG.'-', '', $_GET['page']);
+			$tab_slug = str_replace(WPTS_Admin_Menus::MAIN_MENU_SLUG.'-', '', $_GET['page']);
 		else
-			$page_slug = $_GET['page'];
+			$tab_slug = $_GET['page'];
 
-		if ( ! isset(WPTS()->submenu[ $page_slug ]) )
+		if ( ! isset(WPTS()->submenu[ $tab_slug ]) )
 			return;
 
-		if ( ! current_user_can( WPTS()->submenu[ $page_slug ]['capability'] ) )
+		if ( ! current_user_can( WPTS()->submenu[ $tab_slug ]['capability'] ) )
 			return;
 
-		self::menu_page( WPTS_Admin_Menus::MAIN_MENU_SLUG, $page_slug );
+		if ( WPTS_Admin_Menus::MAIN_MENU_SLUG === $tab_slug )
+			self::info_page();
+
+		if ( ! isset(WPTS()->tabs[ $tab_slug ]) )
+			return;
+
+		if ( isset($_GET['tab']) && isset(WPTS()->tabs[ $tab_slug ][ $_GET['tab'] ]) )
+			self::$active_tab = $_GET['tab'];
+		else
+			self::$active_tab = key(WPTS()->tabs[ $tab_slug ]);
+
+		self::menu_page( $tab_slug );
 	}
 
 	/**
 	 * Menu Page
 	 *
 	 * @static
-	 * @param  string $main_page_slug  - Main Page slug
-	 * @param  string $sub_page_slug   - Sub Page slug
+	 * @param  string $tab_slug  - args tab slug
 	 */
-	private static function menu_page( $main_page_slug, $sub_page_slug )
+	private static function menu_page( $tab_slug )
 	{
 		// Add Script And Style
 		self::add_styles();
 
 		// echo get_admin_page_title()
 
-		//glyphicon glyphicon-envelope
 		?>
 		<div class="wrap">
-			<h2 class="nav-tab-wrapper wpts-top-menu">
-				<a href="?page=wpts&amp;tab=01" class="nav-tab nav-tab-active"><i class="fa fa-gear"></i>01</a>
-				<a href="?page=wpts&amp;tab=02" class="nav-tab"><i class="fa fa-key"></i>02</a>
-				<a href="?page=wpts&amp;tab=03" class="nav-tab"><i class="fa fa-info-circle"></i>03</a>
-			</h2>
+
+			<?php self::echo_top_menu( $tab_slug ); ?>
+
 			<div class="wpts-settings-block">
 				<?php
 				// settings_errors() не срабатывает автоматом на страницах отличных от опций
@@ -95,7 +116,68 @@ class WPTS_Admin_Menu_Pages
 				</form>
 			</div>
 		</div>
-		<?
+		<?php
+	}
+
+	/**
+	 * Add Info page
+	 */
+	private static function info_page()
+	{
+		WPTS()->tabs[ WPTS_Admin_Menus::MAIN_MENU_SLUG ]['info'] = array(
+			'args' => array(
+				'title'   => __("Info", WPTS_PLUGIN_SLUG),
+				'id'      => 'wpts-info',
+				'fa-icon' => 'fa-info-circle',
+			),
+			'groups' => array(
+				'set_1' => array(
+					'args' => array(
+						'title' => __("Website Title", WPTS_PLUGIN_SLUG),
+						'id'    => 'site-name',
+						'class' => '',
+						'desc'  => __("Enter your website title.", WPTS_PLUGIN_SLUG),
+					),
+					'fields' => array(
+						array(
+							'type'  => 'text', // switch,
+							'title' => __("Website Title", WPTS_PLUGIN_SLUG),
+							'name'  => 'blogname',
+							'id'    => 'blogname',
+							'class' => 'option-item bg-grey-input ',
+							'placeholder' => 'placeholder TEXT',
+							'default' => 100,
+							'min' => 0,
+							'max' => 200,
+							'data' => array(),
+						),
+					),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Echo top menu
+	 *
+	 * @param string $tab_slug  - args tab slug
+	 */
+	private static function echo_top_menu( $tab_slug )
+	{
+		echo '<h2 class="nav-tab-wrapper wpts-top-menu">';
+		foreach ( WPTS()->tabs[ $tab_slug ] as $tKey => $tVal )
+		{
+			echo '<a href="?page='. $_GET['page'] .'&tab='. $tKey .'" id="'. (@$tVal['args']['id'] ?: '') .'" class="nav-tab ';
+			if ( $tKey === self::$active_tab )
+			{
+				self::$page_data = $tVal['groups'];
+				echo 'nav-tab-active ';
+			}
+			echo (@$tVal['args']['class'] ?: '') .'">';
+			echo (isset($tVal['args']['fa-icon']) ? '<i class="fa '. $tVal['args']['fa-icon'] .'"></i>' : '');
+			echo (@$tVal['args']['title'] ?: '') .'</a>';
+		}
+		echo '</h2>';
 	}
 
 	/**
