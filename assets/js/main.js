@@ -30,7 +30,14 @@ wpts_admin.init = function()
         function(){ $(this).find('h3 > i.fa-plus-square').css({'color':'#aaa'});}
     );
 
-    $('.toggle').toggles({checkbox:$('.checkme')});
+    // Toggle btn.
+    $('.toggle').toggles().on('toggle', function(e, active)
+    {
+        if (active)
+            $(this).next().next().attr({'checked':'checked'});
+        else
+            $(this).next().next().attr({'checked':false});
+    });
 };
 
 // Start jQuery

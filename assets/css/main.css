@@ -59,15 +59,14 @@
     border: 1px solid #e5e5e5;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.06);
     box-shadow: 0 1px 1px rgba(0,0,0,0.06);
-    background: #fff;
+    background: #fff url("../img/bg-noise.png");
     margin-bottom: 16px;
-    border-radius: 1px;
+    border-radius: 3px;
 }
 
     .wpts_eb_title {
         padding: 8px 12px;
         position: relative;
-        background: #f7f7f7;
     }
 
         .wpts_eb_title h3 {
@@ -95,23 +94,44 @@
 
     .wpts_eb_body {
         display: none;
-        border-top: 1px solid #eee;
+        border-top: 1px solid #aaa;
         padding: 12px;
-        background: #fff;
     }
 
-        .wpts_eb_desc,
+        .wpts_eb_desc {
+            clear: both;
+            display: block;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
         .wpts_eb_table {
             clear: both;
             display: block;
             padding-bottom: 10px;
         }
 
+            .wpts_eb_set_body_desc,
+            .wpts_eb_set_header_desc {
+                font-style: italic;
+                font-size: 13px;
+                font-weight: 400;
+                color: #888;
+            }
+
+            .wpts_eb_set_body_desc {
+                display: inline-block;
+                margin: 0 10px;
+            }
+
 
 /**
  * Toggles Styles
  **----------------------- */
 
+.toggle {
+    display: inline-block;
+}
 .toggle-slide {
   overflow: hidden;
   cursor: pointer;

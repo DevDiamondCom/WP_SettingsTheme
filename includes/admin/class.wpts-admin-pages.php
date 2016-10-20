@@ -199,36 +199,72 @@ class WPTS_Admin_Menu_Pages
 				</div>
 				<div class="wpts_eb_body">
 					<div class="wpts_eb_desc"><?= (@$gVal['group_args']['desc'] ?: '') ?></div>
-					<div class="wpts_eb_table"><?php self::echo_fields( $gVal['fields'] ); ?></div>
+					<div class="wpts_eb_table"><?php self::echo_sets( $gVal['fields'] ); ?></div>
 				</div>
 			</div>
 			<?
 		}
 	}
 
-	private static function echo_fields( $fields_data )
+	/**
+	 * Echo table sets
+	 *
+	 * @static
+	 * @param  array $group_fields_data - group fields data
+	 */
+	private static function echo_sets( $group_fields_data )
 	{
 		// BEGIN Table
 		echo '<table class="form-table"><tbody>';
 
-		$x1 = 0;
-		foreach ( $fields_data as $fVal )
+		foreach ( $group_fields_data as $fVal )
 		{
-			$x1++;
-			echo '<tr valign="top">';
+			if ( ! isset($fVal['field_args']) || ! isset($fVal['fields']) )
+				continue;
 			?>
-				<th class="">
-					<label for="">Auto Start</label>
+			<tr valign="top">
+				<th>
+					<div class="wpts_eb_set_header_title"><?= (@$fVal['field_args']['title'] ?: ''); ?></div>
+					<div class="wpts_eb_set_header_desc"><?= (@$fVal['field_args']['desc'] ?: '') ?></div>
 				</th>
-				<td class="">
-					<div class="toggle toggle-light">
-				</td>
+				<td class=""><?php self::echo_fields( $fVal['fields'] ); ?></td>
+			</tr>
 			<?
-			echo '</tr>';
 		}
 
 		// END Table
 		echo '</tbody></table>';
+	}
+
+	/**
+	 * Echo fields param
+	 *
+	 * @static
+	 * @param array $fields_data - fields data
+	 */
+	private static function echo_fields( $fields_data )
+	{
+		foreach ( $fields_data as $fVal )
+		{
+			if ( ! isset($fVal['type']) || ! isset($fVal['name']) )
+				continue;
+
+			switch ( $fVal['type'] )
+			{
+				case 'switch':
+				{
+					$is_d = isset($fVal['default']) && $fVal['default'];
+					?>
+					<div class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>">
+						<div class="toggle toggle-light" data-toggle-on="<?= ($is_d ? 'true' : 'false' ) ?>" data-toggle-height="24" data-toggle-width="62"></div>
+						<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
+						<input style="display: none" type="checkbox" name="<?= $fVal['name']; ?>" <?= ($is_d ? 'CHECKED' : '' ) ?>>
+					</div>
+					<?
+					break;
+				}
+			}
+		}
 	}
 
 	/**
