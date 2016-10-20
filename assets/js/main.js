@@ -34,9 +34,9 @@ wpts_admin.init = function()
     $('.toggle').toggles().on('toggle', function(e, active)
     {
         if (active)
-            $(this).next().next().attr({'checked':'checked'});
+            $(this).next().attr({'checked':'checked'});
         else
-            $(this).next().next().attr({'checked':false});
+            $(this).next().attr({'checked':false});
     });
 };
 

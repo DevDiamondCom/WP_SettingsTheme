@@ -249,21 +249,106 @@ class WPTS_Admin_Menu_Pages
 			if ( ! isset($fVal['type']) || ! isset($fVal['name']) )
 				continue;
 
+			// BEGIN set body
+			echo '<div class="wpts_eb_set_body">';
+
 			switch ( $fVal['type'] )
 			{
 				case 'switch':
 				{
 					$is_d = isset($fVal['default']) && $fVal['default'];
 					?>
-					<div class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>">
-						<div class="toggle toggle-light" data-toggle-on="<?= ($is_d ? 'true' : 'false' ) ?>" data-toggle-height="24" data-toggle-width="62"></div>
-						<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
-						<input style="display: none" type="checkbox" name="<?= $fVal['name']; ?>" <?= ($is_d ? 'CHECKED' : '' ) ?>>
-					</div>
+					<div class="toggle toggle-light" data-toggle-on="<?= ($is_d ? 'true' : 'false' ) ?>" data-toggle-height="24" data-toggle-width="62"></div>
+					<input class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" style="display: none" type="checkbox" name="<?= $fVal['name']; ?>" <?= ($is_d ? 'CHECKED' : '' ) ?>>
+					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
+					<?
+					break;
+				}
+				case 'text':
+				{
+					?>
+					<input class="regular-text <?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" type="text" name="<?= $fVal['name']; ?>" value="<?= (@$fVal['default'] ?: '' ) ?>" placeholder="<?= (@$fVal['placeholder'] ?: '') ?>">
+					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
+					<?
+					break;
+				}
+				case 'textarea':
+				{
+					?>
+					<textarea class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" name="<?= $fVal['name']; ?>" style="height: 101px; width: 350px;" placeholder="<?= (@$fVal['placeholder'] ?: '') ?>"><?= (@$fVal['default'] ?: '' ) ?></textarea>
+					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
+					<?
+					break;
+				}
+				case 'select':
+				{
+					if ( ! isset($fVal['data']) )
+						break;
+
+					?>
+					<select class="regular-text <?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" name="<?= $fVal['name']; ?>">
+					<?
+
+					$def = (@$fVal['default'] ?: '');
+					foreach ( $fVal['data'] as $dKey => $dVal )
+						echo '<option value="'. $dKey .'" '. ($def === $dKey ? 'SELECTED' : '' ) .'>'. $dVal .'</option>';
+
+					?>
+					</select>
+					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
+					<?
+					break;
+				}
+				case 'checkbox':
+				{
+					if ( ! isset($fVal['data']) )
+						break;
+
+					$arr_def = (array)(@$fVal['default'] ?: array());
+
+					foreach ( $fVal['data'] as $dKey => $dVal )
+					{
+						echo '<lable>';
+						echo '<input class="'. $fVal['class'] .'" id="'. $fVal['id'] .'" type="checkbox" name="'. $fVal['name'] .'" value="'. $dKey .'"'. (array_search($dKey, $arr_def) !== false ? 'CHECKED' : '' ) .'>';
+						echo '<div class="wpts_eb_set_body_val">'. $dVal .'</div></lable><br>';
+					}
+
+					?>
+					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
+					<?
+					break;
+				}
+				case 'radio':
+				{
+					if ( ! isset($fVal['data']) )
+						break;
+
+					$def = (@$fVal['default'] ?: '');
+
+					foreach ( $fVal['data'] as $dKey => $dVal )
+					{
+						echo '<lable>';
+						echo '<input class="'. $fVal['class'] .'" id="'. $fVal['id'] .'" type="radio" name="'. $fVal['name'] .'" value="'. $dKey .'"'. ($dKey === $def ? 'CHECKED' : '' ) .'>';
+						echo '<div class="wpts_eb_set_body_val">'. $dVal .'</div></lable><br>';
+					}
+
+					?>
+					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
+					<?
+					break;
+				}
+				case 'number':
+				{
+					?>
+					<input class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" type="number" name="<?= $fVal['name']; ?>" value="<?= (@$fVal['default'] ?: '' ) ?>" min="<?= (@$fVal['min'] ?: '' ) ?>" max="<?= (@$fVal['max'] ?: '' ) ?>" step="<?= (@$fVal['step'] ?: '' ) ?>" placeholder="<?= (@$fVal['placeholder'] ?: '') ?>">
+					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
 					<?
 					break;
 				}
 			}
+
+			// END set body
+			echo '</div>';
 		}
 	}
 

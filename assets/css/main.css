@@ -120,18 +120,30 @@
             }
 
             .wpts_eb_set_body_desc {
-                display: inline-block;
-                margin: 0 10px;
+                display: block;
+                margin-top: 4px;
             }
 
+            .wpts_eb_set_body_val {
+                display: inline-block;
+                margin: 0 10px 1px 4px;
+            }
+
+input[type=text], input[type=search], input[type=tel], input[type=time],
+input[type=url], input[type=week], input[type=password],
+input[type=date], input[type=datetime], input[type=datetime-local],
+input[type=month], input[type=number], input[type=email], select, textarea {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 4px;
+    padding: 4px 10px;
+    border: 1px solid #ccc;
+}
 
 /**
  * Toggles Styles
  **----------------------- */
 
-.toggle {
-    display: inline-block;
-}
 .toggle-slide {
   overflow: hidden;
   cursor: pointer;
