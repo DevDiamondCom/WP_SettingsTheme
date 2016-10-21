@@ -124,7 +124,7 @@ class WPTS_Admin_Action_Settings
 
 				foreach ( $gVal['fields'] as $fVal )
 				{
-					if ( ! isset($fVal['type']) || ! isset($fVal['name']) )
+					if ( ! isset( $fVal['type'], $fVal['name'] ) )
 						continue;
 
 					if ( ! isset($fVal['default']) )

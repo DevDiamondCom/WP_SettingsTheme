@@ -111,7 +111,7 @@ class WPTS_Admin_Menu_Pages
 		if ( WPTS_Admin_Menus::MAIN_MENU_SLUG === self::$page_slug )
 			self::info_page();
 
-		if ( isset($_GET['tab']) && isset(self::$tabs[ $_GET['tab'] ]) )
+		if ( isset( $_GET['tab'], self::$tabs[ $_GET['tab'] ] ) )
 			self::$active_tab = $_GET['tab'];
 		else
 			self::$active_tab = key(self::$tabs);
@@ -199,7 +199,7 @@ class WPTS_Admin_Menu_Pages
 		// GROUP (set) data
 		foreach ( self::$page_data_group as $gVal )
 		{
-			if ( ! isset($gVal['group_args']) || ! isset($gVal['group_args']['title']) || ! isset($gVal['fields']) )
+			if ( ! isset( $gVal['group_args'], $gVal['group_args']['title'], $gVal['fields'] ) )
 				continue;
 
 			// BEGIN From block
@@ -233,7 +233,7 @@ class WPTS_Admin_Menu_Pages
 
 		foreach ( $group_fields_data as $fVal )
 		{
-			if ( ! isset($fVal['field_args']) || ! isset($fVal['field_args']['title']) || ! isset($fVal['fields']) )
+			if ( ! isset( $fVal['field_args'], $fVal['field_args']['title'], $fVal['fields'] ) )
 				continue;
 			?>
 			<tr valign="top">
@@ -262,8 +262,7 @@ class WPTS_Admin_Menu_Pages
 	{
 		foreach ( $fields_data as $fVal )
 		{
-			if ( ! isset($fVal['type']) || ! isset($fVal['name']) ||
-				empty($fVal['type']) || empty($fVal['name']) )
+			if ( empty($fVal['type']) || empty($fVal['name']) )
 				continue;
 
 			// Set Value
