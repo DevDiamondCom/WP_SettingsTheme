@@ -85,3 +85,8 @@ add_filter('wpts_tabs_wpts', function($tabs)
     ));
 });
 ```
+
+## License
+Copyright (C) 2016 DevDiamond. (email : me@devdiamond.com)
+
+GPLv3 or later - http://www.gnu.org/licenses/gpl-3.0.html
