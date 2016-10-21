@@ -54,20 +54,6 @@ if ( ! class_exists( 'WP_ThemeSettings' ) ) :
 final class WP_ThemeSettings
 {
 	/**
-	 * Tabs lists for the pages of WP_ThemeSettings menu
-	 *
-	 * @var array
-	 */
-	public $tabs = array();
-
-	/**
-	 * Sub menu list for WP_ThemeSettings
-	 *
-	 * @var array
-	 */
-	public $submenu = array();
-
-	/**
 	 * The single instance of the class.
 	 *
 	 * @var WP_ThemeSettings

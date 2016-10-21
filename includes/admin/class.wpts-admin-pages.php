@@ -19,6 +19,14 @@ class WPTS_Admin_Menu_Pages
 	const ASSETS_JS  = 'assets/js/';
 
 	/**
+	 * Tabs lists for the pages of WP_ThemeSettings menu (API)
+	 *
+	 * @var array
+	 * @static
+	 */
+	private static $tabs = array();
+
+	/**
 	 * Page data
 	 *
 	 * @static
@@ -27,12 +35,28 @@ class WPTS_Admin_Menu_Pages
 	private static $page_data_group = array();
 
 	/**
+	 * Options page (settings)
+	 *
+	 * @static
+	 * @var array
+	 */
+	private static $options = array();
+
+	/**
 	 * Active Tab
 	 *
 	 * @static
 	 * @var string
 	 */
 	private static $active_tab;
+
+	/**
+	 * Current Page Slug
+	 *
+	 * @static
+	 * @var string
+	 */
+	private static $page_slug;
 
 	/**
 	 * Is Form block
@@ -64,41 +88,43 @@ class WPTS_Admin_Menu_Pages
 	 */
 	public static function admin_menu_pages()
 	{
+		# Check data
 		if ( ! isset($_GET['page']) )
 			return;
 
 		if ( $_GET['page'] !== WPTS_Admin_Menus::MAIN_MENU_SLUG )
-			$tab_slug = str_replace(WPTS_Admin_Menus::MAIN_MENU_SLUG.'-', '', $_GET['page']);
+			self::$page_slug = str_replace(WPTS_Admin_Menus::MAIN_MENU_SLUG.'-', '', $_GET['page']);
 		else
-			$tab_slug = $_GET['page'];
+			self::$page_slug = $_GET['page'];
 
-		if ( ! isset(WPTS()->submenu[ $tab_slug ]) )
+		if ( ! isset( WPTS_Admin_Menus::$submenu[ self::$page_slug ] ) )
 			return;
 
-		if ( ! current_user_can( WPTS()->submenu[ $tab_slug ]['capability'] ) )
+		if ( ! current_user_can( WPTS_Admin_Menus::$submenu[ self::$page_slug ]['capability'] ) )
 			return;
 
-		if ( WPTS_Admin_Menus::MAIN_MENU_SLUG === $tab_slug )
+		# Get Tabs list (API)
+		self::$tabs = (array) apply_filters('wpts_tabs_'.self::$page_slug, array());
+		if ( ! count(self::$tabs) )
+			return;
+
+		if ( WPTS_Admin_Menus::MAIN_MENU_SLUG === self::$page_slug )
 			self::info_page();
 
-		if ( ! isset(WPTS()->tabs[ $tab_slug ]) )
-			return;
-
-		if ( isset($_GET['tab']) && isset(WPTS()->tabs[ $tab_slug ][ $_GET['tab'] ]) )
+		if ( isset($_GET['tab']) && isset(self::$tabs[ $_GET['tab'] ]) )
 			self::$active_tab = $_GET['tab'];
 		else
-			self::$active_tab = key(WPTS()->tabs[ $tab_slug ]);
+			self::$active_tab = key(self::$tabs);
 
-		self::menu_page( $tab_slug );
+		self::menu_page();
 	}
 
 	/**
 	 * Menu Page
 	 *
 	 * @static
-	 * @param  string $tab_slug  - TAB slug
 	 */
-	private static function menu_page( $tab_slug )
+	private static function menu_page()
 	{
 		// Add Style and Script
 		self::add_styles();
@@ -108,22 +134,15 @@ class WPTS_Admin_Menu_Pages
 
 		echo '<div class="wrap">';
 
-		self::echo_top_menu( $tab_slug );
+		self::echo_top_menu();
 
 		echo '<div class="wpts-settings-block"><br>';
 
-		self::echo_body( $tab_slug );
+		self::echo_body();
 
 		// END From block
 		if ( self::$is_form )
-		{
-			echo '<div class="wpts-sb-btn">';
-			settings_fields("opt_group");
-			do_settings_sections("opt_page");
-			echo '<p><input type="submit" name="bt_save_settings" class="button button-primary" value="'.__('Save changes', WPTS_PLUGIN_SLUG).'">';
-			echo '&nbsp;&nbsp;<input type="submit" name="bt_reset_settings" class="button" value="'.__('Reset Settings', WPTS_PLUGIN_SLUG).'"></p>';
-			echo '</div></form>';
-		}
+			self::end_form_data();
 
 		echo '</div></div>';
 	}
@@ -135,7 +154,7 @@ class WPTS_Admin_Menu_Pages
 	 */
 	private static function info_page()
 	{
-		WPTS()->tabs[ WPTS_Admin_Menus::MAIN_MENU_SLUG ]['info'] = array(
+		self::$tabs['info'] = array(
 			'title_args' => array(
 				'title'   => __("Info", WPTS_PLUGIN_SLUG),
 				'id'      => 'wpts-info',
@@ -148,12 +167,11 @@ class WPTS_Admin_Menu_Pages
 	 * Echo top menu
 	 *
 	 * @static
-	 * @param string $tab_slug  - TAB slug
 	 */
-	private static function echo_top_menu( $tab_slug )
+	private static function echo_top_menu()
 	{
 		echo '<h2 class="nav-tab-wrapper wpts-top-menu">';
-		foreach ( WPTS()->tabs[ $tab_slug ] as $tKey => $tVal )
+		foreach ( self::$tabs as $tKey => $tVal )
 		{
 			if ( ! isset($tVal['title_args']) )
 				continue;
@@ -175,22 +193,18 @@ class WPTS_Admin_Menu_Pages
 	 * Echo body content
 	 *
 	 * @static
-	 * @param string $tab_slug  - TAB slug
 	 */
-	private static function echo_body( $tab_slug )
+	private static function echo_body()
 	{
 		// GROUP (set) data
-		foreach ( self::$page_data_group as $gKey => $gVal )
+		foreach ( self::$page_data_group as $gVal )
 		{
 			if ( ! isset($gVal['group_args']) || ! isset($gVal['fields']) )
 				continue;
 
 			// BEGIN From block
 			if ( ! self::$is_form )
-			{
-				self::$is_form = true;
-				echo '<form action="" method="POST">';
-			}
+				self::begin_form_data();
 
 			?>
 			<div id="wpts_effects_box" class="wpts_eb_block">
@@ -209,10 +223,10 @@ class WPTS_Admin_Menu_Pages
 	/**
 	 * Echo table sets
 	 *
-	 * @static
 	 * @param  array $group_fields_data - group fields data
+	 * @static
 	 */
-	private static function echo_sets( $group_fields_data )
+	private static function echo_sets( &$group_fields_data )
 	{
 		// BEGIN Table
 		echo '<table class="form-table"><tbody>';
@@ -242,12 +256,22 @@ class WPTS_Admin_Menu_Pages
 	 * @static
 	 * @param array $fields_data - fields data
 	 */
-	private static function echo_fields( $fields_data )
+	private static function echo_fields( &$fields_data )
 	{
 		foreach ( $fields_data as $fVal )
 		{
 			if ( ! isset($fVal['type']) || ! isset($fVal['name']) )
 				continue;
+
+			// Set Value
+			if ( isset(self::$options[ $fVal['name'] ]) )
+				$fVal['default'] = self::$options[ $fVal['name'] ];
+			elseif ( ! isset($fVal['default']) )
+				$fVal['default'] = ($fVal['type'] === 'checkbox' ? array() : '');
+			elseif ( $fVal['type'] === 'checkbox' )
+				$fVal['default'] = (array) $fVal['default'];
+			else
+				$fVal['default'] = (string) $fVal['default'];
 
 			// BEGIN set body
 			echo '<div class="wpts_eb_set_body">';
@@ -256,10 +280,9 @@ class WPTS_Admin_Menu_Pages
 			{
 				case 'switch':
 				{
-					$is_d = isset($fVal['default']) && $fVal['default'];
 					?>
-					<div class="toggle toggle-light" data-toggle-on="<?= ($is_d ? 'true' : 'false' ) ?>" data-toggle-height="24" data-toggle-width="62"></div>
-					<input class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" style="display: none" type="checkbox" name="<?= $fVal['name']; ?>" <?= ($is_d ? 'CHECKED' : '' ) ?>>
+					<div class="toggle toggle-light" data-toggle-on="<?= ($fVal['default'] ? 'true' : 'false' ) ?>" data-toggle-height="24" data-toggle-width="62"></div>
+					<input class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" type="hidden" name="<?= $fVal['name']; ?>" value="<?= ($fVal['default'] ? 'true' : 'false' ) ?>">
 					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
 					<?
 					break;
@@ -267,7 +290,7 @@ class WPTS_Admin_Menu_Pages
 				case 'text':
 				{
 					?>
-					<input class="regular-text <?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" type="text" name="<?= $fVal['name']; ?>" value="<?= (@$fVal['default'] ?: '' ) ?>" placeholder="<?= (@$fVal['placeholder'] ?: '') ?>">
+					<input class="regular-text <?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" type="text" name="<?= $fVal['name']; ?>" value="<?= $fVal['default'] ?>" placeholder="<?= (@$fVal['placeholder'] ?: '') ?>">
 					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
 					<?
 					break;
@@ -275,7 +298,7 @@ class WPTS_Admin_Menu_Pages
 				case 'textarea':
 				{
 					?>
-					<textarea class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" name="<?= $fVal['name']; ?>" style="height: 101px; width: 350px;" placeholder="<?= (@$fVal['placeholder'] ?: '') ?>"><?= (@$fVal['default'] ?: '' ) ?></textarea>
+					<textarea class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" name="<?= $fVal['name']; ?>" style="height: 101px; width: 350px;" placeholder="<?= (@$fVal['placeholder'] ?: '') ?>"><?= $fVal['default'] ?></textarea>
 					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
 					<?
 					break;
@@ -289,9 +312,8 @@ class WPTS_Admin_Menu_Pages
 					<select class="regular-text <?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" name="<?= $fVal['name']; ?>">
 					<?
 
-					$def = (@$fVal['default'] ?: '');
 					foreach ( $fVal['data'] as $dKey => $dVal )
-						echo '<option value="'. $dKey .'" '. ($def === $dKey ? 'SELECTED' : '' ) .'>'. $dVal .'</option>';
+						echo '<option value="'. $dKey .'" '. ($fVal['default'] === $dKey ? 'SELECTED' : '' ) .'>'. $dVal .'</option>';
 
 					?>
 					</select>
@@ -304,12 +326,10 @@ class WPTS_Admin_Menu_Pages
 					if ( ! isset($fVal['data']) )
 						break;
 
-					$arr_def = (array)(@$fVal['default'] ?: array());
-
 					foreach ( $fVal['data'] as $dKey => $dVal )
 					{
 						echo '<lable>';
-						echo '<input class="'. $fVal['class'] .'" id="'. $fVal['id'] .'" type="checkbox" name="'. $fVal['name'] .'" value="'. $dKey .'"'. (array_search($dKey, $arr_def) !== false ? 'CHECKED' : '' ) .'>';
+						echo '<input class="'. $fVal['class'] .'" id="'. $fVal['id'] .'" type="checkbox" name="'. $fVal['name'] .'" value="'. $dKey .'"'. (array_search($dKey, $fVal['default']) !== false ? 'CHECKED' : '' ) .'>';
 						echo '<div class="wpts_eb_set_body_val">'. $dVal .'</div></lable><br>';
 					}
 
@@ -323,12 +343,10 @@ class WPTS_Admin_Menu_Pages
 					if ( ! isset($fVal['data']) )
 						break;
 
-					$def = (@$fVal['default'] ?: '');
-
 					foreach ( $fVal['data'] as $dKey => $dVal )
 					{
 						echo '<lable>';
-						echo '<input class="'. $fVal['class'] .'" id="'. $fVal['id'] .'" type="radio" name="'. $fVal['name'] .'" value="'. $dKey .'"'. ($dKey === $def ? 'CHECKED' : '' ) .'>';
+						echo '<input class="'. $fVal['class'] .'" id="'. $fVal['id'] .'" type="radio" name="'. $fVal['name'] .'" value="'. $dKey .'"'. ($dKey === $fVal['default'] ? 'CHECKED' : '' ) .'>';
 						echo '<div class="wpts_eb_set_body_val">'. $dVal .'</div></lable><br>';
 					}
 
@@ -340,7 +358,7 @@ class WPTS_Admin_Menu_Pages
 				case 'number':
 				{
 					?>
-					<input class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" type="number" name="<?= $fVal['name']; ?>" value="<?= (@$fVal['default'] ?: '' ) ?>" min="<?= (@$fVal['min'] ?: '' ) ?>" max="<?= (@$fVal['max'] ?: '' ) ?>" step="<?= (@$fVal['step'] ?: '' ) ?>" placeholder="<?= (@$fVal['placeholder'] ?: '') ?>">
+					<input class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" type="number" name="<?= $fVal['name']; ?>" value="<?= $fVal['default'] ?>" min="<?= (@$fVal['min'] ?: '' ) ?>" max="<?= (@$fVal['max'] ?: '' ) ?>" step="<?= (@$fVal['step'] ?: '' ) ?>" placeholder="<?= (@$fVal['placeholder'] ?: '') ?>">
 					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
 					<?
 					break;
@@ -350,6 +368,41 @@ class WPTS_Admin_Menu_Pages
 			// END set body
 			echo '</div>';
 		}
+	}
+
+	/**
+	 * Begin form data
+	 */
+	private static function begin_form_data()
+	{
+		self::$is_form = true;
+		WPTS_Admin_Action_Settings::update_settings( self::$page_slug, self::$active_tab, self::$page_data_group );
+
+		self::$options = wpts_get_option( self::$page_slug );
+		if (self::$options === false)
+			self::$page_slug = array();
+
+		echo '<form action="" method="POST">';
+	}
+
+	/**
+	 * End form data
+	 */
+	private static function end_form_data()
+	{
+		?>
+		<div class="wpts-sb-btn"><p>
+			<input type="hidden" name="wpts_action" value="wpts_update">
+			<?php
+
+			wp_nonce_field('wpts_action_update_'.self::$active_tab, 'wpts_set_id');
+			$notice_m = __('All settings will be reset to the defaults.\n\nAre you sure you want to reset the SETUP?', WPTS_PLUGIN_SLUG);
+
+			?>
+			<input type="submit" name="bt_save_settings" class="button button-primary" value="<?= __('Save changes', WPTS_PLUGIN_SLUG) ?>">&nbsp;&nbsp;
+			<input type="submit" name="bt_reset_settings" class="button" onclick="javascript:return confirm('<?= $notice_m ?>')" value="<?= __('Reset Settings', WPTS_PLUGIN_SLUG) ?>">
+		</p></div></form>
+		<?php
 	}
 
 	/**

@@ -29,6 +29,7 @@ class WPTS_Admin
 	 */
 	public function includes_init()
 	{
+		require_once('class.wpts-admin-action-settings.php');
 		require_once('class.wpts-admin-menus.php');
 		require_once('class.wpts-admin-pages.php');
 	}

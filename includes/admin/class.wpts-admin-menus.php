@@ -18,6 +18,13 @@ class WPTS_Admin_Menus
 	const MAIN_MENU_SLUG = 'wpts';
 
 	/**
+	 * Sub menu list for WP_ThemeSettings (API)
+	 *
+	 * @var array
+	 */
+	public static $submenu = array();
+
+	/**
 	 * WPTS_Admin_Menus constructor.
 	 */
 	public function __construct()
@@ -34,6 +41,9 @@ class WPTS_Admin_Menus
 	 */
 	public function admin_menu()
 	{
+		// Get Sub Menu list (API)
+		self::$submenu = (array) apply_filters('wpts_submenu', array());
+
 		// Main menu
 		add_menu_page(
 			__('General Theme Settings', WPTS_PLUGIN_SLUG),
@@ -46,7 +56,7 @@ class WPTS_Admin_Menus
 		);
 
 		// Main sub menu
-		WPTS()->submenu[ self::MAIN_MENU_SLUG ] = array(
+		self::$submenu[ self::MAIN_MENU_SLUG ] = array(
 			'page_title' => __('General Theme Settings', WPTS_PLUGIN_SLUG),
 			'menu_title' => __('General Settings', WPTS_PLUGIN_SLUG),
 			'capability' => 'manage_options',
@@ -62,24 +72,23 @@ class WPTS_Admin_Menus
 	private function sub_menu()
 	{
 		// Main sub menu
-		$main_sub_menu = WPTS()->submenu[ self::MAIN_MENU_SLUG ];
 		add_submenu_page(
 			self::MAIN_MENU_SLUG,
-			$main_sub_menu['page_title'],
-			$main_sub_menu['menu_title'],
-			$main_sub_menu['capability'],
+			self::$submenu[ self::MAIN_MENU_SLUG ]['page_title'],
+			self::$submenu[ self::MAIN_MENU_SLUG ]['menu_title'],
+			self::$submenu[ self::MAIN_MENU_SLUG ]['capability'],
 			self::MAIN_MENU_SLUG,
 			array( 'WPTS_Admin_Menu_Pages', 'admin_menu_pages' )
 		);
 
 		// Other all sub menu
-		foreach ( WPTS()->submenu as $sKey => $sVal )
+		foreach ( self::$submenu as $sKey => $sVal )
 		{
 			if ( ! preg_match('/[\w-]+/', $sKey ) || ! trim($sVal['page_title']) || $sKey === self::MAIN_MENU_SLUG )
 				continue;
 
 			if ( ! trim($sVal['capability']) )
-				WPTS()->submenu[ $sKey ]['capability'] = $sVal['capability'] = 'manage_options';
+				self::$submenu[ $sKey ]['capability'] = $sVal['capability'] = 'manage_options';
 			if ( ! current_user_can( $sVal['capability'] ) )
 				continue;
 
