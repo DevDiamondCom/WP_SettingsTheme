@@ -1,6 +1,8 @@
 # WP_ThemeSettings
-WP Theme Settings
+Plugin intended only for DEVELOPERS. Creates a page with the settings for the installed WordPress theme. A very useful tool for developers who work with WordPress Themes.
 
+**Example of adding a submenu**
+```php
 /**
  * Add Sub Menu
  * ----------------------------------------------- */
@@ -19,8 +21,11 @@ add_filter('wpts_submenu', function($submunu)
         ),
     ));
 });
+```
 
 
+**Example of adding tabs to pages**
+```php
 /**
  * General Menu Tab - General
  * ----------------------------------------------- */
@@ -79,3 +84,4 @@ add_filter('wpts_tabs_wpts', function($tabs)
         // Settings tab for the second, etc.
     ));
 });
+```
