@@ -17,33 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class WPTS_Admin_Action_Settings
 {
-	const OPTIONS_PREFIX = 'WPTS_';
-
-	/**
-	 * Get option
-	 *
-	 * @param  string $option_slug  - Option slug
-	 * @param  string $option_name  - Option name
-	 * @param  bool   $default      - Default options
-	 *
-	 * @return mixed
-	 * @static
-	 */
-	public static function get_option( $option_slug, $option_name = null, $default = false )
-	{
-		$option = get_option( self::OPTIONS_PREFIX . $option_slug );
-
-		if ( false === $option )
-			return $default;
-
-		if ( $option_name === null )
-			return $option;
-		elseif ( isset( $option[ $option_name ] ) )
-			return $option[ $option_name ];
-		else
-			return $default;
-	}
-
 	/**
 	 * Check and Update WPTS settings
 	 *
@@ -66,7 +39,7 @@ class WPTS_Admin_Action_Settings
 		if ( isset($_POST['bt_save_settings']) )
 			self::_update_settings( $page_slug );
 		elseif ( isset($_POST['bt_reset_settings']) )
-			self::_reset_settings( $page_slug, $page_data_group );
+			self::_default_settings( $page_slug, $page_data_group );
 	}
 
 	/**
@@ -75,7 +48,23 @@ class WPTS_Admin_Action_Settings
 	 */
 	public static function activate_wpts()
 	{
-		//
+		return;
+//		foreach ( array_keys( WPTS_Admin_Menus::$submenu ) as $mVal )
+//		{
+//			if ( ! preg_match('/[\w-]+/', $mVal) || wpts_get_option($mVal) )
+//				continue;
+//
+//			// Get Page Tabs list (API)
+//			$arr_tabs = (array) apply_filters('wpts_tabs_'.$mVal, array());
+//
+//			foreach ( $arr_tabs as $tKey => $tVal )
+//			{
+//				if ( ! isset($tVal[ $tKey ]['groups']) || ! is_array($tVal[ $tKey ]['groups']) )
+//					continue;
+//
+//				self::_default_settings( $mVal, $tVal[ $tKey ]['groups'] );
+//			}
+//		}
 	}
 
 	/**
@@ -84,7 +73,7 @@ class WPTS_Admin_Action_Settings
 	 */
 	public static function deactivate_wpts()
 	{
-		//
+		return;
 	}
 
 	/**
@@ -114,13 +103,13 @@ class WPTS_Admin_Action_Settings
 	}
 
 	/**
-	 * Reset WPTS settings
+	 * Reset (default) WPTS settings
 	 *
-	 * @param  string $page_slug        - Current Page slug
-	 * @param  array  $page_data_group  - Current Page Tab fields data
+	 * @param  string $page_slug        - Page slug
+	 * @param  array  $page_data_group  - Page Tab fields data
 	 * @static
 	 */
-	private static function _reset_settings( $page_slug, &$page_data_group )
+	private static function _default_settings( $page_slug, &$page_data_group )
 	{
 		$data = array();
 		foreach ( $page_data_group as $tVal )
@@ -128,12 +117,12 @@ class WPTS_Admin_Action_Settings
 			if ( ! isset($tVal['fields']) )
 				continue;
 
-			foreach ( $tVal as $gVal )
+			foreach ( $tVal['fields'] as $gVal )
 			{
 				if ( ! isset($gVal['fields']) )
 					continue;
 
-				foreach ( $gVal as $fVal )
+				foreach ( $gVal['fields'] as $fVal )
 				{
 					if ( ! isset($fVal['type']) || ! isset($fVal['name']) )
 						continue;
@@ -142,6 +131,8 @@ class WPTS_Admin_Action_Settings
 						$fVal['default'] = ($fVal['type'] === 'checkbox' ? array() : '');
 					elseif ( $fVal['type'] === 'checkbox' )
 						$fVal['default'] = (array) $fVal['default'];
+					elseif ( $fVal['type'] === 'switch' )
+						$fVal['default'] = (bool) $fVal['default'];
 					else
 						$fVal['default'] = (string) $fVal['default'];
 
@@ -151,7 +142,8 @@ class WPTS_Admin_Action_Settings
 		}
 
 		// Update options
-		self::_update_option( $page_slug, $data, false );
+		if ( $data )
+			self::_update_option( $page_slug, $data, false );
 	}
 
 	/**
@@ -177,7 +169,7 @@ class WPTS_Admin_Action_Settings
 	{
 		if ( $is_merge === true )
 		{
-			$option = get_option( self::OPTIONS_PREFIX . $option_slug );
+			$option = get_option( WP_ThemeSettings::OPTIONS_PREFIX . $option_slug );
 			$option = ( false === $option ) ? array() : (array) $option;
 			$option = array_merge( $option, (array) $options );
 		}
@@ -186,7 +178,7 @@ class WPTS_Admin_Action_Settings
 		else
 			return;
 
-		update_option( self::OPTIONS_PREFIX . $option_slug, $option );
+		update_option( WP_ThemeSettings::OPTIONS_PREFIX . $option_slug, $option );
 	}
 
 	/**
@@ -198,21 +190,7 @@ class WPTS_Admin_Action_Settings
 	private static function _delete_option( $option_slugs )
 	{
 		foreach ( $option_slugs as $sVal )
-			delete_option( self::OPTIONS_PREFIX . $sVal );
+			delete_option( WP_ThemeSettings::OPTIONS_PREFIX . $sVal );
 	}
 
-}
-
-/**
- * Get option from WP_ThemeSettings Settings
- *
- * @param  string $option_slug  - Option slug
- * @param  string $option_name  - Option name
- * @param  bool   $default      - Default options
- *
- * @return mixed
- */
-function wpts_get_option( $option_slug, $option_name = null, $default = false )
-{
-	return WPTS_Admin_Action_Settings::get_option( $option_slug, $option_name, $default );
 }

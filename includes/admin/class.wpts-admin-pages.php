@@ -105,7 +105,7 @@ class WPTS_Admin_Menu_Pages
 
 		# Get Tabs list (API)
 		self::$tabs = (array) apply_filters('wpts_tabs_'.self::$page_slug, array());
-		if ( ! count(self::$tabs) )
+		if ( ! self::$tabs )
 			return;
 
 		if ( WPTS_Admin_Menus::MAIN_MENU_SLUG === self::$page_slug )
@@ -179,7 +179,7 @@ class WPTS_Admin_Menu_Pages
 			echo '<a href="?page='. $_GET['page'] .'&tab='. $tKey .'" id="'. (@$tVal['title_args']['id'] ?: '') .'" class="nav-tab ';
 			if ( $tKey === self::$active_tab )
 			{
-				self::$page_data_group = @$tVal['groups'] ?: array();
+				self::$page_data_group = (array) @$tVal['groups'] ?: array();
 				echo 'nav-tab-active ';
 			}
 			echo (@$tVal['title_args']['class'] ?: '') .'">';
@@ -270,6 +270,8 @@ class WPTS_Admin_Menu_Pages
 				$fVal['default'] = ($fVal['type'] === 'checkbox' ? array() : '');
 			elseif ( $fVal['type'] === 'checkbox' )
 				$fVal['default'] = (array) $fVal['default'];
+			elseif ( $fVal['type'] === 'switch' )
+				$fVal['default'] = (bool) $fVal['default'];
 			else
 				$fVal['default'] = (string) $fVal['default'];
 
@@ -282,7 +284,7 @@ class WPTS_Admin_Menu_Pages
 				{
 					?>
 					<div class="toggle toggle-light" data-toggle-on="<?= ($fVal['default'] ? 'true' : 'false' ) ?>" data-toggle-height="24" data-toggle-width="62"></div>
-					<input class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" type="hidden" name="<?= $fVal['name']; ?>" value="<?= ($fVal['default'] ? 'true' : 'false' ) ?>">
+					<input class="<?= $fVal['class'] ?>" id="<?= $fVal['id'] ?>" type="hidden" name="<?= $fVal['name']; ?>" value="<?= ($fVal['default'] ? 1 : 0 ) ?>">
 					<div class="wpts_eb_set_body_desc"><?= $fVal['desc'] ?></div>
 					<?
 					break;
@@ -329,7 +331,7 @@ class WPTS_Admin_Menu_Pages
 					foreach ( $fVal['data'] as $dKey => $dVal )
 					{
 						echo '<lable>';
-						echo '<input class="'. $fVal['class'] .'" id="'. $fVal['id'] .'" type="checkbox" name="'. $fVal['name'] .'" value="'. $dKey .'"'. (array_search($dKey, $fVal['default']) !== false ? 'CHECKED' : '' ) .'>';
+						echo '<input class="'. $fVal['class'] .'" id="'. $fVal['id'] .'" type="checkbox" name="'. $fVal['name'] .'[]" value="'. $dKey .'"'. (array_search($dKey, $fVal['default']) !== false ? 'CHECKED' : '' ) .'>';
 						echo '<div class="wpts_eb_set_body_val">'. $dVal .'</div></lable><br>';
 					}
 

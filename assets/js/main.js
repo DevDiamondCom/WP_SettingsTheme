@@ -34,9 +34,9 @@ wpts_admin.init = function()
     $('.toggle').toggles().on('toggle', function(e, active)
     {
         if (active)
-            $(this).next().val('true');
+            $(this).next().val('1');
         else
-            $(this).next().val('false');
+            $(this).next().val('0');
     });
 };
 
