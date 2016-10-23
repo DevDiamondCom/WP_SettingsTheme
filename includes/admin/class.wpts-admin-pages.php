@@ -211,7 +211,7 @@ class WPTS_Admin_Menu_Pages
 				<div class="wpts_eb_title">
 					<h3 id="<?= (@$gVal['group_args']['id'] ?: '') ?>" class="<?= (@$gVal['group_args']['class'] ?: '') ?>"><i class="fa fa-plus-square"></i><?= $gVal['group_args']['title'] ?></h3>
 				</div>
-				<div class="wpts_eb_body">
+				<div class="wpts_eb_body" style="display: none;">
 					<div class="wpts_eb_desc"><?= (@$gVal['group_args']['desc'] ?: '') ?></div>
 					<div class="wpts_eb_table"><?php self::echo_sets( $gVal['fields'] ); ?></div>
 				</div>
@@ -315,7 +315,7 @@ class WPTS_Admin_Menu_Pages
 						break;
 
 					?>
-					<select class="regular-text <?= (@$fVal['class'] ?: '') ?>" id="<?= (@$fVal['id'] ?: '') ?>" name="<?= $fVal['name']; ?>">
+					<select class="regular-text <?= (@$fVal['class'] ?: '') ?>" id="<?= (@$fVal['id'] ?: '') ?>" name="<?= $fVal['name']; ?>" title="<?= (@$fVal['title'] ?: '') ?>">
 					<?php foreach ( $fVal['data'] as $dKey => $dVal ) : ?>
 						<option value="<?= $dKey ?>" <?= ($fVal['default'] === $dKey ? 'SELECTED' : '' ) ?>><?= $dVal ?></option>
 					<?php endforeach; ?>
@@ -331,9 +331,9 @@ class WPTS_Admin_Menu_Pages
 					foreach ( $fVal['data'] as $dKey => $dVal )
 					{
 						?>
-						<lable><input class="<?= (@$fVal['class'] ?: '') ?>" id="<?= (@$fVal['id'] ?: '') ?>" type="checkbox"
+						<label><input class="<?= (@$fVal['class'] ?: '') ?>" id="<?= (@$fVal['id'] ?: '') ?>" type="checkbox"
 						name="<?= $fVal['name'] ?>[]" value="<?= $dKey ?>" <?= (array_search($dKey, $fVal['default']) !== false ? 'CHECKED' : '' ) ?>>
-						<div class="wpts_eb_set_body_val"><?= $dVal ?></div></lable><br>
+						<span class="wpts_eb_set_body_val"><?= $dVal ?></span></label><br>
 						<?
 					}
 					break;
@@ -346,9 +346,9 @@ class WPTS_Admin_Menu_Pages
 					foreach ( $fVal['data'] as $dKey => $dVal )
 					{
 						?>
-						<lable><input class="<?= (@$fVal['class'] ?: '') ?>" id="<?= (@$fVal['id'] ?: '') ?>" type="radio"
+						<label><input class="<?= (@$fVal['class'] ?: '') ?>" id="<?= (@$fVal['id'] ?: '') ?>" type="radio"
 						name="<?= $fVal['name'] ?>" value="<?= $dKey ?>" <?= ($dKey === $fVal['default'] ? 'CHECKED' : '' ) ?>>
-						<div class="wpts_eb_set_body_val"><?= $dVal ?></div></lable><br>
+						<span class="wpts_eb_set_body_val"><?= $dVal ?></span></label><br>
 						<?php
 					}
 					break;
@@ -400,9 +400,10 @@ class WPTS_Admin_Menu_Pages
 
 			?>
 			<input type="submit" name="bt_save_settings" class="button button-primary" value="<?= __('Save changes', WPTS_PLUGIN_SLUG) ?>">&nbsp;&nbsp;
-			<input type="submit" name="bt_reset_settings" class="button" onclick="javascript:return confirm('<?= $notice_m ?>')" value="<?= __('Reset Settings', WPTS_PLUGIN_SLUG) ?>">
-		</p></div></form>
+			<input type="submit" name="bt_reset_settings" class="button" onclick="return confirm('<?= $notice_m ?>')" value="<?= __('Reset Settings', WPTS_PLUGIN_SLUG) ?>">
+		</p></div>
 		<?php
+		echo '</form>';
 	}
 
 	/**

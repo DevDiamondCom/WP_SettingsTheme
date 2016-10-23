@@ -143,7 +143,7 @@ class WPTS_Admin_Action_Settings
 
 		// Update options
 		if ( $data )
-			self::_update_option( $page_slug, $data, false );
+			self::_update_option( $page_slug, $data, true );
 	}
 
 	/**
