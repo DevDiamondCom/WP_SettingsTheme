@@ -145,6 +145,11 @@ input[type=month], input[type=number], input[type=email], select, textarea {
     border: 1px solid #ccc;
 }
 
+::-webkit-input-placeholder {color:#d0d0d0;font-style:italic;}
+::-moz-placeholder          {color:#d0d0d0;font-style:italic;}/* Firefox 19+ */
+:-moz-placeholder           {color:#d0d0d0;font-style:italic;}/* Firefox 18- */
+:-ms-input-placeholder      {color:#d0d0d0;font-style:italic;}
+
 /**
  * Toggles Styles
  **----------------------- */
