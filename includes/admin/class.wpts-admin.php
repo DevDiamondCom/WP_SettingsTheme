@@ -1,8 +1,8 @@
 <?php
 /**
- * WP Admin_Panel
+ * WP Admin Panel
  *
- * @class    Admin_Panel
+ * @class    Admin
  * @author   DevDiamond <me@devdiamond.com>
  * @package  WP_Theme_Settings/Admin
  * @version  1.0.0
@@ -13,12 +13,12 @@ namespace WPTS\admin;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Class Admin_Panel - Admin Panel set.
+ * Class Admin - Admin Panel set.
  */
 class Admin
 {
 	/**
-	 * Admin_Panel constructor.
+	 * Admin constructor.
 	 */
 	public function __construct()
 	{
