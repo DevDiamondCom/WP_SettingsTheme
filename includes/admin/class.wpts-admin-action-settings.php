@@ -54,6 +54,9 @@ class Admin_Action_Settings
 	 */
 	public static function uninstall_wpts( $option_slugs )
 	{
+		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) )
+			exit();
+
 		self::_delete_option( $option_slugs );
 	}
 
