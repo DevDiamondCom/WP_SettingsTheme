@@ -6,17 +6,8 @@
  * @package  WP_ThemeSettings
  * @version  1.0.0
  */
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-/**
- * Main instance of WP_ThemeSettings.
- *
- * @return WP_ThemeSettings
- */
-function WPTS()
-{
-	return WP_ThemeSettings::instance();
-}
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
  * Get option from WP_ThemeSettings Settings

@@ -10,7 +10,7 @@
 </IfModule>
 
 # WP_ThemeSettings CSS
-<FilesMatch "^(font-awesome\.min)\.css$">
+<FilesMatch "^(admin-main)\.css$">
 	<IfModule !mod_authz_core.c>
 		Allow from all
 	</IfModule>
@@ -21,7 +21,7 @@
 </FilesMatch>
 
 # WP_ThemeSettings JS
-<FilesMatch "^(toggles\.min)\.js$">
+<FilesMatch "^(admin-main)\.js$">
 	<IfModule !mod_authz_core.c>
 		Allow from all
 	</IfModule>
@@ -31,8 +31,8 @@
 	</IfModule>
 </FilesMatch>
 
-# WP_ThemeSettings Font
-<FilesMatch "^fontawesome-webfont\.(woff|woff2|ttf)$">
+# WP_ThemeSettings IMG
+<FilesMatch "^(bg-noise)\.(png)$">
 	<IfModule !mod_authz_core.c>
 		Allow from all
 	</IfModule>

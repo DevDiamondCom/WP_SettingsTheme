@@ -170,3 +170,13 @@ final class WP_ThemeSettings
 }
 
 endif;
+
+/**
+ * Main instance of WP_ThemeSettings.
+ *
+ * @return WP_ThemeSettings
+ */
+function WPTS()
+{
+	return WP_ThemeSettings::instance();
+}

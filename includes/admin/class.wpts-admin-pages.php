@@ -15,8 +15,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class WPTS_Admin_Menu_Pages
 {
-	const ASSETS_CSS = 'assets/css/';
-	const ASSETS_JS  = 'assets/js/';
+	const ASSETS_FRONT_CSS = 'assets/css/';
+	const ASSETS_ADMIN_CSS = 'assets/admin/css/';
+
+	const ASSETS_FRONT_JS  = 'assets/js/';
+	const ASSETS_ADMIN_JS  = 'assets/admin/js/';
 
 	/**
 	 * Tabs lists for the pages of WP_ThemeSettings menu (API)
@@ -416,14 +419,14 @@ class WPTS_Admin_Menu_Pages
 		// Toggle JS
 		wp_enqueue_script(
 			'toggle-min',
-			WPTS_PLUGIN_URL . self::ASSETS_JS . 'toggles.min.js',
+			WPTS_PLUGIN_URL . self::ASSETS_FRONT_JS . 'toggles.min.js',
 			array('jquery')
 		);
 
 		// Main JS
 		wp_enqueue_script(
 			'wpts-main',
-			WPTS_PLUGIN_URL . self::ASSETS_JS . 'main.js',
+			WPTS_PLUGIN_URL . self::ASSETS_ADMIN_JS . 'admin-main.js',
 			array('jquery')
 		);
 	}
@@ -437,14 +440,14 @@ class WPTS_Admin_Menu_Pages
 	{
 		// FontAwesomeStyles
 		wp_enqueue_style(
-			'wpts-fontawesome',
-			WPTS_PLUGIN_URL . self::ASSETS_CSS . 'font-awesome.min.css'
+			'fontawesome',
+			WPTS_PLUGIN_URL . self::ASSETS_FRONT_CSS . 'font-awesome.min.css'
 		);
 
 		// Main CSS
 		wp_enqueue_style(
 			'wpts-main',
-			WPTS_PLUGIN_URL . self::ASSETS_CSS . 'main.css'
+			WPTS_PLUGIN_URL . self::ASSETS_ADMIN_CSS . 'admin-main.css'
 		);
 	}
 }
