@@ -2,30 +2,32 @@
 /**
  * Setup menus in WP admin
  *
- * @class    WPTS_Admin_Menus
+ * @class    Admin_Menus
  * @author   DevDiamond <me@devdiamond.com>
- * @package  WP_ThemeSettings/Admin
+ * @package  WP_Theme_Settings/Admin
  * @version  1.0.0
  */
+
+namespace WPTS\admin;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Class WPTS_Admin_Menus - Create WP_ThemeSettings Menus
+ * Class Admin_Menus - Create WP_Theme_Settings Menus
  */
-class WPTS_Admin_Menus
+class Admin_Menus
 {
 	const MAIN_MENU_SLUG = 'wpts';
 
 	/**
-	 * Sub menu list for WP_ThemeSettings (API)
+	 * Sub menu list for WP_Theme_Settings (API)
 	 *
 	 * @var array
 	 */
 	public static $submenu = array();
 
 	/**
-	 * WPTS_Admin_Menus constructor.
+	 * Admin_Menus constructor.
 	 */
 	public function __construct()
 	{
@@ -78,7 +80,7 @@ class WPTS_Admin_Menus
 			self::$submenu[ self::MAIN_MENU_SLUG ]['menu_title'],
 			self::$submenu[ self::MAIN_MENU_SLUG ]['capability'],
 			self::MAIN_MENU_SLUG,
-			array( 'WPTS_Admin_Menu_Pages', 'admin_menu_pages' )
+			array( 'WPTS\admin\Admin_Menu_Pages', 'admin_menu_pages' )
 		);
 
 		// Other all sub menu
@@ -101,10 +103,10 @@ class WPTS_Admin_Menus
 				$sVal['menu_title'],
 				$sVal['capability'],
 				self::MAIN_MENU_SLUG.'-'.$sKey,
-				array( 'WPTS_Admin_Menu_Pages', 'admin_menu_pages' )
+				array( 'WPTS\admin\Admin_Menu_Pages', 'admin_menu_pages' )
 			);
 		}
 	}
 }
 
-new WPTS_Admin_Menus();
+new Admin_Menus();

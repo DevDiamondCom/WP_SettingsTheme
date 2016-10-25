@@ -3,14 +3,14 @@
  * Functions
  *
  * @author   DevDiamond <me@devdiamond.com>
- * @package  WP_ThemeSettings
+ * @package  WP_Theme_Settings
  * @version  1.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Get option from WP_ThemeSettings Settings
+ * Get option from WP_Theme_Settings Settings
  *
  * @param  string $option_slug  - Option slug
  * @param  string $option_name  - Option name

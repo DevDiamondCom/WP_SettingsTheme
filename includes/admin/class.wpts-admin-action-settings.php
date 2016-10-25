@@ -1,21 +1,25 @@
 <?php
 /**
- * Actions Settings WP_ThemeSettings
+ * Actions Settings WP_Theme_Settings
  *
- * Manipulation of settings WP_ThemeSettings
+ * Manipulation of settings WP_Theme_Settings
  *
- * @class    WPTS_Admin_Action_Settings
+ * @class    Admin_Action_Settings
  * @author   DevDiamond <me@devdiamond.com>
- * @package  WP_ThemeSettings/Admin
+ * @package  WP_Theme_Settings/Admin
  * @version  1.0.0
  */
+
+namespace WPTS\admin;
+
+use WP_Theme_Settings;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Class WPTS_Admin_Action_Settings - Actions Settings WP_ThemeSettings
+ * Class Admin_Action_Settings - Actions Settings WP_Theme_Settings
  */
-class WPTS_Admin_Action_Settings
+class Admin_Action_Settings
 {
 	/**
 	 * Check and Update WPTS settings
@@ -43,41 +47,7 @@ class WPTS_Admin_Action_Settings
 	}
 
 	/**
-	 * Activate WP_ThemeSettings
-	 * @static
-	 */
-	public static function activate_wpts()
-	{
-		return;
-//		foreach ( array_keys( WPTS_Admin_Menus::$submenu ) as $mVal )
-//		{
-//			if ( ! preg_match('/[\w-]+/', $mVal) || wpts_get_option($mVal) )
-//				continue;
-//
-//			// Get Page Tabs list (API)
-//			$arr_tabs = (array) apply_filters('wpts_tabs_'.$mVal, array());
-//
-//			foreach ( $arr_tabs as $tKey => $tVal )
-//			{
-//				if ( ! isset($tVal[ $tKey ]['groups']) || ! is_array($tVal[ $tKey ]['groups']) )
-//					continue;
-//
-//				self::_default_settings( $mVal, $tVal[ $tKey ]['groups'] );
-//			}
-//		}
-	}
-
-	/**
-	 * Deactivate WP_ThemeSettings
-	 * @static
-	 */
-	public static function deactivate_wpts()
-	{
-		return;
-	}
-
-	/**
-	 * Uninstall WP_ThemeSettings
+	 * Uninstall WP_Theme_Settings
 	 *
 	 * @param  array $option_slugs  - Delete Option slug list
 	 * @static
@@ -169,7 +139,7 @@ class WPTS_Admin_Action_Settings
 	{
 		if ( $is_merge === true )
 		{
-			$option = get_option( WP_ThemeSettings::OPTIONS_PREFIX . $option_slug );
+			$option = get_option( WP_Theme_Settings::OPTIONS_PREFIX . $option_slug );
 			$option = ( false === $option ) ? array() : (array) $option;
 			$option = array_merge( $option, (array) $options );
 		}
@@ -178,7 +148,7 @@ class WPTS_Admin_Action_Settings
 		else
 			return;
 
-		update_option( WP_ThemeSettings::OPTIONS_PREFIX . $option_slug, $option );
+		update_option( WP_Theme_Settings::OPTIONS_PREFIX . $option_slug, $option );
 	}
 
 	/**
@@ -190,7 +160,7 @@ class WPTS_Admin_Action_Settings
 	private static function _delete_option( $option_slugs )
 	{
 		foreach ( $option_slugs as $sVal )
-			delete_option( WP_ThemeSettings::OPTIONS_PREFIX . $sVal );
+			delete_option( WP_Theme_Settings::OPTIONS_PREFIX . $sVal );
 	}
 
 }

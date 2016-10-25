@@ -2,18 +2,23 @@
 /**
  * Setup menu pages in WP admin
  *
- * @class    WPTS_Admin_Menu_Pages
+ * @class    Admin_Menu_Pages
  * @author   DevDiamond <me@devdiamond.com>
- * @package  WP_ThemeSettings/Admin
+ * @package  WP_Theme_Settings/Admin
  * @version  1.0.0
  */
+
+namespace WPTS\admin;
+
+use WPTS\admin\Admin_Action_Settings;
+use WPTS\admin\Admin_Menus;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Class WPTS_Admin_Menu_Pages - Create WP_ThemeSettings Menu Pages
+ * Class Admin_Menu_Pages - Create WP_Theme_Settings Menu Pages
  */
-class WPTS_Admin_Menu_Pages
+class Admin_Menu_Pages
 {
 	const ASSETS_FRONT_CSS = 'assets/css/';
 	const ASSETS_ADMIN_CSS = 'assets/admin/css/';
@@ -22,7 +27,7 @@ class WPTS_Admin_Menu_Pages
 	const ASSETS_ADMIN_JS  = 'assets/admin/js/';
 
 	/**
-	 * Tabs lists for the pages of WP_ThemeSettings menu (API)
+	 * Tabs lists for the pages of WP_Theme_Settings menu (API)
 	 *
 	 * @var array
 	 * @static
@@ -70,7 +75,7 @@ class WPTS_Admin_Menu_Pages
 	private static $is_form = false;
 
 	/**
-	 * WPTS_Admin_Menus constructor.
+	 * Admin_Menu_Pages constructor.
 	 */
 	private function __construct(){}
 
@@ -95,15 +100,15 @@ class WPTS_Admin_Menu_Pages
 		if ( ! isset($_GET['page']) )
 			return;
 
-		if ( $_GET['page'] !== WPTS_Admin_Menus::MAIN_MENU_SLUG )
-			self::$page_slug = str_replace(WPTS_Admin_Menus::MAIN_MENU_SLUG.'-', '', $_GET['page']);
+		if ( $_GET['page'] !== Admin_Menus::MAIN_MENU_SLUG )
+			self::$page_slug = str_replace(Admin_Menus::MAIN_MENU_SLUG.'-', '', $_GET['page']);
 		else
 			self::$page_slug = $_GET['page'];
 
-		if ( ! isset( WPTS_Admin_Menus::$submenu[ self::$page_slug ] ) )
+		if ( ! isset( Admin_Menus::$submenu[ self::$page_slug ] ) )
 			return;
 
-		if ( ! current_user_can( WPTS_Admin_Menus::$submenu[ self::$page_slug ]['capability'] ) )
+		if ( ! current_user_can( Admin_Menus::$submenu[ self::$page_slug ]['capability'] ) )
 			return;
 
 		# Get Tabs list (API)
@@ -111,7 +116,7 @@ class WPTS_Admin_Menu_Pages
 		if ( ! self::$tabs )
 			return;
 
-		if ( WPTS_Admin_Menus::MAIN_MENU_SLUG === self::$page_slug )
+		if ( Admin_Menus::MAIN_MENU_SLUG === self::$page_slug )
 			self::info_page();
 
 		if ( isset( $_GET['tab'], self::$tabs[ $_GET['tab'] ] ) )
@@ -379,7 +384,7 @@ class WPTS_Admin_Menu_Pages
 	private static function begin_form_data()
 	{
 		self::$is_form = true;
-		WPTS_Admin_Action_Settings::update_settings( self::$page_slug, self::$active_tab, self::$page_data_group );
+		Admin_Action_Settings::update_settings( self::$page_slug, self::$active_tab, self::$page_data_group );
 
 		self::$options = wpts_get_option( self::$page_slug );
 		if (self::$options === false)

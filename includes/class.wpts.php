@@ -1,39 +1,40 @@
 <?php
 /**
- * WP_ThemeSettings Core (Main Class)
+ * WP_Theme_Settings Core (Main Class)
  *
- * @class    WP_ThemeSettings
+ * @class    WP_Theme_Settings
  * @author   DevDiamond <me@devdiamond.com>
- * @package  WP_ThemeSettings
+ * @package  WP_Theme_Settings
  * @version  1.0.0
  */
+
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-// Load Main WP_ThemeSettings Class
-if ( ! class_exists( 'WP_ThemeSettings' ) ) :
+// Load Main WP_Theme_Settings Class
+if ( ! class_exists( 'WP_Theme_Settings' ) ) :
 
 /**
- * Class WP_ThemeSettings - Main Class (Core).
+ * Class WP_Theme_Settings - Main Class (Core).
  */
-final class WP_ThemeSettings
+final class WP_Theme_Settings
 {
 	const OPTIONS_PREFIX = 'WPTS_';
 
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var WP_ThemeSettings
+	 * @var WP_Theme_Settings
 	 */
 	protected static $_instance = null;
 
 	/**
-	 * Main WP_ThemeSettings Instance.
+	 * Main WP_Theme_Settings Instance.
 	 *
-	 * Ensures only one instance of WP_ThemeSettings is loaded or can be loaded.
+	 * Ensures only one instance of WP_Theme_Settings is loaded or can be loaded.
 	 *
 	 * @static
 	 * @see WPTS()
-	 * @return WP_ThemeSettings - Main instance.
+	 * @return WP_Theme_Settings - Main instance.
 	 */
 	public static function instance()
 	{
@@ -53,7 +54,7 @@ final class WP_ThemeSettings
 	public function __wakeup(){}
 
 	/**
-	 * WP_ThemeSettings Constructor.
+	 * WP_Theme_Settings Constructor.
 	 */
 	public function __construct()
 	{
@@ -108,7 +109,7 @@ final class WP_ThemeSettings
 	}
 
 	/**
-	 * Init WP_ThemeSettings when WordPress Initialises.
+	 * Init WP_Theme_Settings when WordPress Initialises.
 	 */
 	public function init()
 	{
@@ -129,7 +130,7 @@ final class WP_ThemeSettings
 	}
 
 	/**
-	 * WP_ThemeSettings activation
+	 * WP_Theme_Settings activation
 	 */
 	public function plugin_activation()
 	{
@@ -137,7 +138,7 @@ final class WP_ThemeSettings
 	}
 
 	/**
-	 * WP_ThemeSettings deactivation
+	 * WP_Theme_Settings deactivation
 	 */
 	public function plugin_deactivation()
 	{
@@ -172,11 +173,11 @@ final class WP_ThemeSettings
 endif;
 
 /**
- * Main instance of WP_ThemeSettings.
+ * Main instance of WP_Theme_Settings.
  *
- * @return WP_ThemeSettings
+ * @return WP_Theme_Settings
  */
 function WPTS()
 {
-	return WP_ThemeSettings::instance();
+	return WP_Theme_Settings::instance();
 }

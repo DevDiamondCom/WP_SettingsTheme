@@ -1,22 +1,24 @@
 <?php
 /**
- * WP_ThemeSettings Admin
+ * WP Admin_Panel
  *
- * @class    WPTS_Admin
+ * @class    Admin_Panel
  * @author   DevDiamond <me@devdiamond.com>
- * @package  WP_ThemeSettings/Admin
+ * @package  WP_Theme_Settings/Admin
  * @version  1.0.0
  */
+
+namespace WPTS\admin;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * Class WPTS_Admin - Admin Panel set.
+ * Class Admin_Panel - Admin Panel set.
  */
-class WPTS_Admin
+class Admin
 {
 	/**
-	 * WPTS_Admin constructor.
+	 * Admin_Panel constructor.
 	 */
 	public function __construct()
 	{
@@ -25,7 +27,7 @@ class WPTS_Admin
 	}
 
 	/**
-	 * Include the necessary classes for the admin panel.
+	 * Include the necessary classes for the Admin Panel.
 	 */
 	public function includes_init()
 	{
@@ -35,7 +37,7 @@ class WPTS_Admin
 	}
 
 	/**
-	 * Include the necessary classes for the admin panel.
+	 * Include the necessary classes for the Admin Panel.
 	 */
 	public function includes_admin_init()
 	{
@@ -43,4 +45,4 @@ class WPTS_Admin
 	}
 }
 
-new WPTS_Admin();
+new Admin();
