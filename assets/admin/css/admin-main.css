@@ -2,21 +2,60 @@
  * Menu Tabs
  **----------------------- */
 
-.wpts-top-menu {
+.dd-header {
+    display: block;
+    padding: 16px 20px;
+    margin: 12px 0;
+    border-bottom: 1px solid #ccc; /*#B0E2BB*/
+    background: #fff;
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+}
+
+.dd-header h3 {
+    display: inline-block;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.dd-header-logo {
+    float: right;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    top: -6px;
+}
+
+.dd-header-logo a:active,
+.dd-header-logo a:hover,
+.dd-header-logo a:focus {
+    display: inline-block;
+}
+.dd-header-logo img {
+    display: inline-block;
+}
+
+
+/**
+ * Menu Tabs
+ **----------------------- */
+
+.dd-top-menu {
     margin: 0 4px !important;
 }
 
-.wpts-top-menu a {
+.dd-top-menu a {
     border-radius: 4px 4px 0 0;
     padding: 8px 14px 5px;
 }
 
-.wpts-top-menu a i {
+.dd-top-menu a i {
     margin-right: 8px;
     font-size: 16px;
 }
 
-.wpts-top-menu a.nav-tab-active {
+.dd-top-menu a.nav-tab-active {
     color: #124964;
     /*-webkit-box-shadow: 0 0 0 0 #5b9dd9, 0 -1px 0 1px rgba(30,140,190,.8);*/
     /*box-shadow: 0 0 0 0 #5b9dd9, 0 -1px 0 1px rgba(30,140,190,.8);*/
@@ -31,7 +70,7 @@
  * Settings block
  **----------------------- */
 
-.wpts-settings-block {
+.dd-settings-block {
     padding: 10px 20px 16px;
     margin-bottom: 60px;
     background: #fff;
@@ -45,7 +84,7 @@
     border-radius: 4px;
 }
 
-.wpts-sb-btn {
+.dd-sb-btn {
     margin-top: 24px;
 }
 
@@ -54,7 +93,7 @@
  * BOX blocks
  **----------------------- */
 
-.wpts_eb_block {
+.dd_eb_block {
     position: relative;
     border: 1px solid #e5e5e5;
     -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.06);
@@ -64,72 +103,72 @@
     border-radius: 3px;
 }
 
-    .wpts_eb_title {
+    .dd_eb_title {
         padding: 8px 12px;
         position: relative;
     }
 
-        .wpts_eb_title h3 {
+        .dd_eb_title h3 {
             margin: 0;
             cursor: pointer;
             font-size: 15px;
         }
 
-            .wpts_eb_title h3 i {
+            .dd_eb_title h3 i {
                 font-size: 16px;
                 margin-right: 10px;
             }
 
-            .wpts_eb_title h3 i.fa-plus-square {
+            .dd_eb_title h3 i.fa-plus-square {
                 color: #aaa;
             }
 
-            .wpts_eb_title h3 i.fa-minus-square {
+            .dd_eb_title h3 i.fa-minus-square {
                 color: #000!important;
             }
 
-                .wpts_eb_title h3 i:hover {
+                .dd_eb_title h3 i:hover {
                     color: #000;
                 }
 
-    .wpts_eb_body {
+    .dd_eb_body {
         display: none;
         border-top: 1px solid #aaa;
         padding: 12px;
     }
 
-        .wpts_eb_desc {
+        .dd_eb_desc {
             clear: both;
             display: block;
             padding: 10px 0;
             font-size: 14px;
         }
 
-        .wpts_eb_table {
+        .dd_eb_table {
             clear: both;
             display: block;
             padding-bottom: 10px;
         }
 
-            .wpts_eb_set_body_title {
+            .dd_eb_set_body_title {
                 margin-bottom: 4px;
                 font-weight: 600;
             }
 
-            .wpts_eb_set_body_desc,
-            .wpts_eb_set_header_desc {
+            .dd_eb_set_body_desc,
+            .dd_eb_set_header_desc {
                 font-style: italic;
                 font-size: 13px;
                 font-weight: 400;
                 color: #888;
             }
 
-            .wpts_eb_set_body_desc {
+            .dd_eb_set_body_desc {
                 display: block;
                 margin-top: 4px;
             }
 
-            .wpts_eb_set_body_val {
+            .dd_eb_set_body_val {
                 display: inline-block;
                 margin: 0 10px 1px 4px;
             }

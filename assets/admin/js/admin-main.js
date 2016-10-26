@@ -25,7 +25,7 @@ wpts_admin.SettingsOpenCloseEffect = function( obj_this )
 wpts_admin.init = function()
 {
     // Open / Close Effect
-    $('.wpts_eb_title').click(function(){ wpts_admin.SettingsOpenCloseEffect( $(this) ); }).hover(
+    $('.dd_eb_title').click(function(){ wpts_admin.SettingsOpenCloseEffect( $(this) ); }).hover(
         function(){ $(this).find('h3 > i.fa-plus-square').css({'color':'#000'});},
         function(){ $(this).find('h3 > i.fa-plus-square').css({'color':'#aaa'});}
     );

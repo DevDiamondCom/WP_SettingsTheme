@@ -26,6 +26,10 @@ class Admin_Menu_Pages
 	const ASSETS_FRONT_JS  = 'assets/js/';
 	const ASSETS_ADMIN_JS  = 'assets/admin/js/';
 
+	const ASSETS_ADMIN_IMG = 'assets/admin/img/';
+
+	const INFO_TAB_SLUG    = 'info';
+
 	/**
 	 * Tabs lists for the pages of WP_Theme_Settings menu (API)
 	 *
@@ -138,13 +142,12 @@ class Admin_Menu_Pages
 		self::add_styles();
 		self::add_scripts();
 
-		// echo get_admin_page_title()
-
 		echo '<div class="wrap">';
 
+		self::echo_header();
 		self::echo_top_menu();
 
-		echo '<div class="wpts-settings-block"><br>';
+		echo '<div class="dd-settings-block"><br>';
 
 		self::echo_body();
 
@@ -162,7 +165,7 @@ class Admin_Menu_Pages
 	 */
 	private static function info_page()
 	{
-		self::$tabs['info'] = array(
+		self::$tabs[ self::INFO_TAB_SLUG ] = array(
 			'title_args' => array(
 				'title'   => __("Info", WPTS_PLUGIN_SLUG),
 				'id'      => 'wpts-info',
@@ -172,19 +175,38 @@ class Admin_Menu_Pages
 	}
 
 	/**
+	 * Echo Header
+	 *
+	 * @static
+	 */
+	private static function echo_header()
+	{
+		?>
+		<div class="dd-header">
+			<h3><?= get_admin_page_title() ?></h3>
+			<div class="dd-header-logo">
+				<a href="?page=<?= esc_attr( $_GET['page'] ) ?>&tab=<?= self::INFO_TAB_SLUG ?>">
+					<img src="<?= WPTS_PLUGIN_URL . self::ASSETS_ADMIN_IMG . 'logo-30x30.png' ?>" title="<?= esc_attr(__('Info', WPTS_PLUGIN_SLUG)) ?>" />
+				</a>
+			</div>
+		</div>
+		<?
+	}
+
+	/**
 	 * Echo top menu
 	 *
 	 * @static
 	 */
 	private static function echo_top_menu()
 	{
-		echo '<h2 class="nav-tab-wrapper wpts-top-menu">';
+		echo '<h2 class="nav-tab-wrapper dd-top-menu">';
 		foreach ( self::$tabs as $tKey => $tVal )
 		{
 			if ( ! isset($tVal['title_args']) )
 				continue;
 
-			echo '<a href="?page='. $_GET['page'] .'&tab='. $tKey .'" id="'. (@$tVal['title_args']['id'] ?: '') .'" class="nav-tab ';
+			echo '<a href="?page='. esc_attr( $_GET['page'] ) .'&tab='. $tKey .'" id="'. (@$tVal['title_args']['id'] ?: '') .'" class="nav-tab ';
 			if ( $tKey === self::$active_tab )
 			{
 				self::$page_data_group = (array) @$tVal['groups'] ?: array();
@@ -215,13 +237,13 @@ class Admin_Menu_Pages
 				self::begin_form_data();
 
 			?>
-			<div id="wpts_effects_box" class="wpts_eb_block">
-				<div class="wpts_eb_title">
+			<div id="wpts_effects_box" class="dd_eb_block">
+				<div class="dd_eb_title">
 					<h3 id="<?= (@$gVal['group_args']['id'] ?: '') ?>" class="<?= (@$gVal['group_args']['class'] ?: '') ?>"><i class="fa fa-plus-square"></i><?= $gVal['group_args']['title'] ?></h3>
 				</div>
-				<div class="wpts_eb_body" style="display: none;">
-					<div class="wpts_eb_desc"><?= (@$gVal['group_args']['desc'] ?: '') ?></div>
-					<div class="wpts_eb_table"><?php self::echo_sets( $gVal['fields'] ); ?></div>
+				<div class="dd_eb_body" style="display: none;">
+					<div class="dd_eb_desc"><?= (@$gVal['group_args']['desc'] ?: '') ?></div>
+					<div class="dd_eb_table"><?php self::echo_sets( $gVal['fields'] ); ?></div>
 				</div>
 			</div>
 			<?
@@ -246,9 +268,9 @@ class Admin_Menu_Pages
 			?>
 			<tr valign="top">
 				<th>
-					<div id="<?= (@$fVal['field_args']['id'] ?: ''); ?>" class="wpts_eb_set_header <?= (@$fVal['field_args']['class'] ?: ''); ?>">
-						<div class="wpts_eb_set_header_title"><?= $fVal['field_args']['title'] ?></div>
-						<div class="wpts_eb_set_header_desc"><?= (@$fVal['field_args']['desc'] ?: '') ?></div>
+					<div id="<?= (@$fVal['field_args']['id'] ?: ''); ?>" class="dd_eb_set_header <?= (@$fVal['field_args']['class'] ?: ''); ?>">
+						<div class="dd_eb_set_header_title"><?= $fVal['field_args']['title'] ?></div>
+						<div class="dd_eb_set_header_desc"><?= (@$fVal['field_args']['desc'] ?: '') ?></div>
 					</div>
 				</th>
 				<td class=""><?php self::echo_fields( $fVal['fields'] ); ?></td>
@@ -286,7 +308,7 @@ class Admin_Menu_Pages
 				$fVal['default'] = (string) $fVal['default'];
 
 			// BEGIN set body
-			?><div class="wpts_eb_set_body"><div class="wpts_eb_set_body_title"><?= (@$fVal['title'] ?: '') ?></div><?
+			?><div class="dd_eb_set_body"><div class="dd_eb_set_body_title"><?= (@$fVal['title'] ?: '') ?></div><?
 
 			switch ( $fVal['type'] )
 			{
@@ -341,7 +363,7 @@ class Admin_Menu_Pages
 						?>
 						<label><input class="<?= (@$fVal['class'] ?: '') ?>" id="<?= (@$fVal['id'] ?: '') ?>" type="checkbox"
 						name="<?= $fVal['name'] ?>[]" value="<?= $dKey ?>" <?= (array_search($dKey, $fVal['default']) !== false ? 'CHECKED' : '' ) ?>>
-						<span class="wpts_eb_set_body_val"><?= $dVal ?></span></label><br>
+						<span class="dd_eb_set_body_val"><?= $dVal ?></span></label><br>
 						<?
 					}
 					break;
@@ -356,7 +378,7 @@ class Admin_Menu_Pages
 						?>
 						<label><input class="<?= (@$fVal['class'] ?: '') ?>" id="<?= (@$fVal['id'] ?: '') ?>" type="radio"
 						name="<?= $fVal['name'] ?>" value="<?= $dKey ?>" <?= ($dKey === $fVal['default'] ? 'CHECKED' : '' ) ?>>
-						<span class="wpts_eb_set_body_val"><?= $dVal ?></span></label><br>
+						<span class="dd_eb_set_body_val"><?= $dVal ?></span></label><br>
 						<?php
 					}
 					break;
@@ -374,7 +396,7 @@ class Admin_Menu_Pages
 			}
 
 			// END set body
-			?><div class="wpts_eb_set_body_desc"><?= (@$fVal['desc'] ?: '') ?></div></div><?php
+			?><div class="dd_eb_set_body_desc"><?= (@$fVal['desc'] ?: '') ?></div></div><?php
 		}
 	}
 
@@ -399,7 +421,7 @@ class Admin_Menu_Pages
 	private static function end_form_data()
 	{
 		?>
-		<div class="wpts-sb-btn"><p>
+		<div class="dd-sb-btn"><p>
 			<input type="hidden" name="wpts_action" value="wpts_update">
 			<?php
 

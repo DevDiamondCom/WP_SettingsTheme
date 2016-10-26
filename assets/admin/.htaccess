@@ -32,7 +32,7 @@
 </FilesMatch>
 
 # WP_ThemeSettings IMG
-<FilesMatch "^(bg-noise)\.(png)$">
+<FilesMatch "^(logo-30x30|bg-noise)\.(png)$">
 	<IfModule !mod_authz_core.c>
 		Allow from all
 	</IfModule>
