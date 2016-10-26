@@ -160,6 +160,13 @@ class Admin_Menus
 			array('jquery')
 		);
 
+		// DD JS Script
+		wp_enqueue_script(
+			'dd-script',
+			WPTS_PLUGIN_URL . self::ASSETS_ADMIN_JS . 'dd-script.js',
+			array('jquery')
+		);
+
 		// Main JS
 		wp_enqueue_script(
 			'wpts-main',
@@ -173,10 +180,16 @@ class Admin_Menus
 	 */
 	private function add_styles()
 	{
-		// FontAwesomeStyles
+		// FontAwesome Styles
 		wp_enqueue_style(
 			'fontawesome',
 			WPTS_PLUGIN_URL . self::ASSETS_FRONT_CSS . 'font-awesome.min.css'
+		);
+
+		// DD Style
+		wp_enqueue_style(
+			'dd-style',
+			WPTS_PLUGIN_URL . self::ASSETS_ADMIN_CSS . 'dd-style.css'
 		);
 
 		// Main CSS

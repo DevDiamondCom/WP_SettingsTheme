@@ -10,7 +10,7 @@
 </IfModule>
 
 # WP_ThemeSettings CSS
-<FilesMatch "^(admin-main)\.css$">
+<FilesMatch "^(admin-main|dd-style)\.css$">
 	<IfModule !mod_authz_core.c>
 		Allow from all
 	</IfModule>
@@ -21,7 +21,7 @@
 </FilesMatch>
 
 # WP_ThemeSettings JS
-<FilesMatch "^(admin-main)\.js$">
+<FilesMatch "^(admin-main|dd-script)\.js$">
 	<IfModule !mod_authz_core.c>
 		Allow from all
 	</IfModule>
