@@ -20,14 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class Admin_Menu_Pages
 {
-	const ASSETS_FRONT_CSS = 'assets/css/';
-	const ASSETS_ADMIN_CSS = 'assets/admin/css/';
-
-	const ASSETS_FRONT_JS  = 'assets/js/';
-	const ASSETS_ADMIN_JS  = 'assets/admin/js/';
-
-	const ASSETS_ADMIN_IMG = 'assets/admin/img/';
-
 	const INFO_TAB_SLUG    = 'info';
 
 	/**
@@ -100,28 +92,17 @@ class Admin_Menu_Pages
 	 */
 	public static function admin_menu_pages()
 	{
-		# Check data
-		if ( ! isset($_GET['page']) )
-			return;
-
-		if ( $_GET['page'] !== Admin_Menus::MAIN_MENU_SLUG )
-			self::$page_slug = str_replace(Admin_Menus::MAIN_MENU_SLUG.'-', '', $_GET['page']);
-		else
-			self::$page_slug = $_GET['page'];
-
-		if ( ! isset( Admin_Menus::$submenu[ self::$page_slug ] ) )
-			return;
-
-		if ( ! current_user_can( Admin_Menus::$submenu[ self::$page_slug ]['capability'] ) )
+		# Check page slugs
+		if ( false === (self::$page_slug = Admin_Menus::check_current_page()) )
 			return;
 
 		# Get Tabs list (API)
 		self::$tabs = (array) apply_filters('wpts_tabs_'.self::$page_slug, array());
-		if ( ! self::$tabs )
-			return;
-
 		if ( Admin_Menus::MAIN_MENU_SLUG === self::$page_slug )
 			self::info_page();
+
+		if ( ! self::$tabs )
+			return;
 
 		if ( isset( $_GET['tab'], self::$tabs[ $_GET['tab'] ] ) )
 			self::$active_tab = $_GET['tab'];
@@ -138,10 +119,6 @@ class Admin_Menu_Pages
 	 */
 	private static function menu_page()
 	{
-		// Add Style and Script
-		self::add_styles();
-		self::add_scripts();
-
 		echo '<div class="wrap">';
 
 		self::echo_header();
@@ -186,7 +163,7 @@ class Admin_Menu_Pages
 			<h3><?= get_admin_page_title() ?></h3>
 			<div class="dd-header-logo">
 				<a href="?page=<?= esc_attr( $_GET['page'] ) ?>&tab=<?= self::INFO_TAB_SLUG ?>">
-					<img src="<?= WPTS_PLUGIN_URL . self::ASSETS_ADMIN_IMG . 'logo-30x30.png' ?>" title="<?= esc_attr(__('Info', WPTS_PLUGIN_SLUG)) ?>" />
+					<img src="<?= WPTS_PLUGIN_URL . Admin_Menus::ASSETS_ADMIN_IMG . 'logo-30x30.png' ?>" title="<?= esc_attr(__('Info', WPTS_PLUGIN_SLUG)) ?>" />
 				</a>
 			</div>
 		</div>
@@ -434,47 +411,5 @@ class Admin_Menu_Pages
 		</p></div>
 		<?php
 		echo '</form>';
-	}
-
-	/**
-	 * Add Scripts
-	 *
-	 * @static
-	 */
-	private static function add_scripts()
-	{
-		// Toggle JS
-		wp_enqueue_script(
-			'toggle-min',
-			WPTS_PLUGIN_URL . self::ASSETS_FRONT_JS . 'toggles.min.js',
-			array('jquery')
-		);
-
-		// Main JS
-		wp_enqueue_script(
-			'wpts-main',
-			WPTS_PLUGIN_URL . self::ASSETS_ADMIN_JS . 'admin-main.js',
-			array('jquery')
-		);
-	}
-
-	/**
-	 * Add Styles
-	 *
-	 * @static
-	 */
-	private static function add_styles()
-	{
-		// FontAwesomeStyles
-		wp_enqueue_style(
-			'fontawesome',
-			WPTS_PLUGIN_URL . self::ASSETS_FRONT_CSS . 'font-awesome.min.css'
-		);
-
-		// Main CSS
-		wp_enqueue_style(
-			'wpts-main',
-			WPTS_PLUGIN_URL . self::ASSETS_ADMIN_CSS . 'admin-main.css'
-		);
 	}
 }

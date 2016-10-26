@@ -17,7 +17,15 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class Admin_Menus
 {
-	const MAIN_MENU_SLUG = 'wpts';
+	const ASSETS_FRONT_CSS = 'assets/css/';
+	const ASSETS_ADMIN_CSS = 'assets/admin/css/';
+
+	const ASSETS_FRONT_JS  = 'assets/js/';
+	const ASSETS_ADMIN_JS  = 'assets/admin/js/';
+
+	const ASSETS_ADMIN_IMG = 'assets/admin/img/';
+
+	const MAIN_MENU_SLUG   = 'wpts';
 
 	/**
 	 * Sub menu list for WP_Theme_Settings (API)
@@ -66,6 +74,13 @@ class Admin_Menus
 
 		// Add all sub menu
 		$this->sub_menu();
+
+		// Add Style and Script
+		if ( self::check_current_page() !== false )
+		{
+			$this->add_styles();
+			$this->add_scripts();
+		}
 	}
 
 	/**
@@ -106,6 +121,69 @@ class Admin_Menus
 				array( 'WPTS\admin\Admin_Menu_Pages', 'admin_menu_pages' )
 			);
 		}
+	}
+
+	/**
+	 * Check Current Page
+	 *
+	 * @static
+	 * @return bool|string - false or page_slug
+	 */
+	public static function check_current_page()
+	{
+		if ( ! isset($_GET['page']) )
+			return false;
+
+		if ( $_GET['page'] !== self::MAIN_MENU_SLUG )
+			$page_slug = str_replace(self::MAIN_MENU_SLUG.'-', '', $_GET['page']);
+		else
+			$page_slug = $_GET['page'];
+
+		if ( ! isset( self::$submenu[ $page_slug ] ) )
+			return false;
+
+		if ( ! current_user_can( self::$submenu[ $page_slug ]['capability'] ) )
+			return false;
+
+		return $page_slug;
+	}
+
+	/**
+	 * Add Scripts
+	 */
+	private function add_scripts()
+	{
+		// Toggle JS
+		wp_enqueue_script(
+			'toggle-min',
+			WPTS_PLUGIN_URL . self::ASSETS_FRONT_JS . 'toggles.min.js',
+			array('jquery')
+		);
+
+		// Main JS
+		wp_enqueue_script(
+			'wpts-main',
+			WPTS_PLUGIN_URL . self::ASSETS_ADMIN_JS . 'admin-main.js',
+			array('jquery')
+		);
+	}
+
+	/**
+	 * Add Styles
+	 */
+	private function add_styles()
+	{
+		// FontAwesomeStyles
+		wp_enqueue_style(
+			'fontawesome',
+			WPTS_PLUGIN_URL . self::ASSETS_FRONT_CSS . 'font-awesome.min.css'
+		);
+
+		// Main CSS
+		wp_enqueue_style(
+			'wpts-main',
+			WPTS_PLUGIN_URL . self::ASSETS_ADMIN_CSS . 'admin-main.css'
+		);
 	}
 }
 
