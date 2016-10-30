@@ -350,6 +350,9 @@ class Admin_Menu_Pages
 					if ( ! isset($fVal['data']) )
 						break;
 
+					if ( $fVal['default'] === '' )
+						$fVal['default'] = key($fVal['data']);
+
 					foreach ( $fVal['data'] as $dKey => $dVal )
 					{
 						?>
