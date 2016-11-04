@@ -390,7 +390,7 @@ class Admin_Menu_Pages
 
 		self::$options = wpts_get_option( self::$page_slug );
 		if (self::$options === false)
-			self::$page_slug = array();
+			self::$options = array();
 
 		echo '<form action="" method="POST">';
 	}
